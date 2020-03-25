@@ -1,0 +1,181 @@
+.main {
+	margin-top:10px;
+	margin-bottom:10px;
+	margin-left:10px;
+	color:#666;
+}
+
+
+
+.panel {
+    color: white;
+}
+
+.panel h2 {
+    font-size: 14px;
+    height: 34px;
+    left: 0;
+    line-height: 32px;
+    right: 0;
+	text-align:center
+}
+
+.info_sonde {
+	margin-left:-10px;
+}
+
+
+
+strong{
+	font-size: 14px;
+	font-weight: bold;
+    line-height: 48px;	
+}
+
+hr {
+	margin-left: 30px;
+	border: 0; 
+	height: 1px; 
+	background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+
+.unit {
+	color:#666;
+	margin-left:4px;
+    position: absolute;
+}
+
+
+.stable {
+	font-size: 20px;
+    margin-left: 20px;
+    margin-top: 15px;
+    position: absolute;
+}
+
+.up {
+	font-size: 20px;
+    margin-left: 20px;
+    margin-top: 5px;
+    position: absolute;	
+}
+
+.down {
+	font-size: 20px;
+    margin-left: 20px;
+    margin-top: 15px;
+    position: absolute;	
+}
+
+select {
+	width:150px;
+}
+
+.graph {
+	padding-top:10px;
+}
+
+
+	
+.select_date {
+	color:#666;
+}
+
+
+
+#toolbar_btn {
+	margin-left:8px;
+	margin-top:5px;
+	text-align:center;
+}
+
+
+.temp_module_left {
+	margin-top:30px;
+	margin-bottom:10px;
+	text-align:center;
+}
+
+.temp_min_left > hr {
+	margin-left:0;
+}
+
+.aside_data {
+	margin-top:50px;
+	text-align:center;
+	
+}
+
+.ui-datepicker-title {
+
+   color: gray;
+ }
+ 
+ td , tr , th {
+	 text-align:center;
+ }
+ 
+ td {
+	 font-weight: bold;
+ }
+ 
+.box {
+    position: relative;
+    border-radius: 3px;
+    background: #ffffff;
+    border-top: 3px solid #d2d6de;
+    margin-bottom: 20px;
+    width: 100%;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+}
+
+.box-header {
+    color: #444;
+    display: block;
+    padding: 10px;
+    position: relative;
+}
+
+.highcharts-range-selector-buttons {
+    display: none;
+}
+
+button.accordion {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+button.accordion.active, button.accordion:hover {
+    background-color: #ddd;
+}
+
+/* Style the accordion panel. Note: hidden by default */
+div.panel_accordion {
+    padding: 0 18px;
+    background-color: white;
+    display: none;
+}
+
+
+#history span , #statistic span, #statistic_month span {
+	margin-left:20px
+}
+
+.delay.active{
+	color: #666;
+}
+
+
+input {
+
+    background-image: linear-gradient(rgba(161,170,174,.47),rgba(161,171,172,.51) 60%,rgba(172,179,181,.4))!important;
+    background-color: transparent!important;
+}
