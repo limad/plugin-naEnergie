@@ -1,0 +1,628 @@
+<div class="eqLogic eqLogic-widget allowResize allowReorderCmd allowLayout #custom_layout# #eqLogic_class# #category#"
+      style="min-height: 160px;min-width:140px; position: relative; width:#width#; height:#height#;
+             background-color:#background-color#!important; color:#color#; border:#border#; border-radius:#border-radius#;#style#"
+      data-eqType="#eqType#" data-eqLogic_id="#id#" data-eqLogic_uid="#uid#" data-cat_color="#catcolore#"
+      data-version="#version#" data-translate-category="#translate_category#" data-category="#category#" data-tags="#tags#">
+   
+  <link rel="stylesheet" nonce="" href="plugins/naEnergie/core/template/dashboard/src/naEnergie.css">     
+  <span class="statusCmd"></span>
+  <span class="cmd refresh pull-right cursor" data-cmd_id="#refresh_id#"><i class="fas fa-sync"></i></span>
+  <center class="widget-name">
+          
+		<span class="cmd #heatstatus_history# pull-left cursor" title="Chaudière arrêtée"  data-cmd_id='#heatstatus_id#' 
+                style="margin-top: 5px; margin-left: -5px;color:#3498db;">
+				<i class="icon jeedom-feu"></i>
+		</span>	
+		<span class="cmd anticipation pull-left cursor" title="Pas d'anticipation en cours"  data-cmd_id='#heatstatus_id#' 
+                 style="margin-top: 5px; margin-left: 3px;color:#3498db;">
+			<i class="icon jeedomapp-playerplay "></i>
+		</span>	
+          
+      	<span class="reportModeVisible" style="display:none;color:white;">#object_name#</span>
+		<a href="#eqLink#" class="reportModeHidden" style="margin-right: 25px;">#name_display# </a>
+</center> 
+		
+	
+  <script type="text/javascript">
+	
+    ///////////////
+    $('.eqLogic[data-eqLogic_uid=#uid#] .refresh').on('click', function () {
+		//console.log("refresh_id: "   )
+      jeedom.cmd.execute({id: '#refresh_id#'});
+    });
+   
+   $('.eqLogic[data-eqLogic_uid=#uid#]').ready(function(el) { 
+		catcolor = $('.eqLogic[data-eqLogic_uid=#uid#] .widget-name').css('background-color');
+		catcolor_a = catcolor.replace(')', ', 0.5)').replace('rgb', 'rgba');
+		
+		//console.log("catcolor_a: " + catcolor_a);
+		$('.eqLogic[data-eqLogic_uid=#uid#]').closest('.eqLogic-widget').attr('data-cat_color', catcolor);				
+		eq_width = $('.eqLogic[data-eqLogic_uid=#uid#]').closest('.eqLogic-widget').css('width');
+		eq_height = $('.eqLogic[data-eqLogic_uid=#uid#]').closest('.eqLogic-widget').css('height');
+		cat_color = $('.eqLogic[data-eqLogic_uid=#uid#]').closest('.eqLogic-widget').attr('data-cat_color');
+		if ('#deviceName#' != '' ) {
+        	$('.eqLogic[data-eqLogic_uid=#uid#] .wname').append(' - #deviceName#');
+        }
+     
+     	if ('#etat#' == 1) {
+        	$('.eqLogic[data-eqLogic_uid=#uid#] .icon_etat').css('color', cat_color + '!important');
+        }
+     	
+     	//infcmd
+	});
+	</script>
+	<section> 
+  				<span class="cmd cmd-widget" data-cmd_id="#homeAuto_id#" style="display:none;"></span>
+				<span class="cmd cmd-widget" data-cmd_id="#roomAuto_id#" style="display:none;"></span>
+				<span class="cmd cmd-widget" data-cmd_id="#away_id#" style="display:none;"></span>
+                <span class="cmd cmd-widget" data-cmd_id="#off_id#" style="display:none;"></span>
+				<span class="cmd cmd-widget" data-cmd_id="#endtime_change#" style="display:none;"></span>
+				<span class="cmd cmd-widget" data-cmd_id="#planning_change#" style="display:none;"></span>
+				<span class="cmd cmd-widget" data-cmd_id="#consigneset_id#" style="display:none;"></span>
+				
+				<span class="cmd cmd-widget" data-cmd_id="#hg_id#" style="display:none;"></span>
+                <span class="cmd cmd-widget" data-cmd_id="#hwboost_id#" style="display:none;"></span>
+      </section>
+<div class="eq_body">
+ 
+  <center>
+    <div class="na-icon-manual"></div>
+    <img class="IMGmode3702" src="data/customTemplates/dashboard/cmd.info.string.Netatmo_therminfo/manual.png">
+    <img class="IMGwifi3702" src="data/customTemplates/dashboard/cmd.info.string.Netatmo_therminfo/wifi_null.png">
+    
+	<div class="h-inline plus-temp h-relative ng-isolate-scope" 
+         ng-click="roomSelector.setPoint(room, 0.5)" 
+         ng-class="{disable: roomSelector.isRoomSelected(room) &amp;&amp; !room.isBoostable()}" 
+         na-disable="roomSelector.isRoomSelected(room) &amp;&amp; (!room.isBoostable() || room.therm_setpoint_mode === 'off')" 
+         on-long-press="roomSelector.longSetPoint(room, 0.5)" 
+         on-touch-end="roomSelector.endLongSetPoint()">
+      	<!-- ngIf: dController.naDisable -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">
+        <path fill="#434343" fill-rule="evenodd" d="M8.4 5.6V.694C8.4.32 8.084 0 7.693 0H6.307C5.92 0 5.6.31 5.6.694V5.6H.694C.32 5.6 0 5.916 0 6.307v1.386c0 .386.31.707.694.707H5.6v4.906c0 .375.316.694.707.694h1.386c.386 0 .707-.31.707-.694V8.4h4.906c.375 0 .694-.316.694-.707V6.307c0-.386-.31-.707-.694-.707H8.4z">
+        </path>
+      </svg><
+	/div>
+    
+    
+    
+    <style>
+	.minus-temp, .plus-temp {
+          height: 32px;
+          width: 32px;
+          box-shadow: 0 1px 3px 0 rgba(0,0,0,.08), 0 4px 6px 0 rgba(50,50,50,.11);
+          border-radius: 50%;
+          position: relative;
+          cursor: pointer;
+
+    }
+	.na-icon-manual {
+          	
+    		background-image: url(plugins/naEnergie/core/template/dashboard/src/icons/manual.png);
+          	width: 25px;
+    		height: 25px;
+          	position: absolute;
+    		z-index: 4;
+          	top: 18%;
+    		left: 57%;
+          	background-position: center;
+    		background-repeat: no-repeat;
+    		background-size: contain;
+          	
+          
+          
+          
+		}
+      
+      
+      div.one {
+			height: 50px;
+			width:50px;
+			background: #1c87c9;
+			border-radius: 25% 25% 25% 25% / 25% 25% 25% 25%;
+		}
+      	div.two {
+			height: 70px;
+			width:130px;
+			background: #3e17c9;
+			border-radius: 25% 25% 25% 25% / 25% 25% 25% 25%;
+		}
+      </style>
+   
+    <!-- ******* test <span class="consdec decimal" style="left:24px;">0</span>************  -->
+	<div class="room therm-room ">
+		<div class="room-temperature h-relative">
+			<span class="top h-absolute "></span>
+			<span class="right h-absolute "></span>
+			<span class="bottom h-absolute "></span>
+			<span class="left h-absolute "></span>
+			<span class="hide natemp#id#">#temperature#</span>
+			<span class="cmd-widget #temperature_history# tempent" data-type="info" data-cmd_id="#temperature_id#">
+               <span class="tempdec decimal"></span>
+          	</span>
+		</div>
+      	<div class="room-setpoint h-relative">
+			<span class="top h-absolute" ></span>
+			<span class="right h-absolute" ></span>
+			<span class="bottom h-absolute"></span>
+			<span class="left h-absolute"></span>
+            <span class="hide nacons#id#">#consigne#</span>
+			<span class="cmd-widget #consigne_history# consent"><span class="consdec decimal"></span></span>
+			<div class="nacontrol left h-absolute" data-cmd_id="#consigne_id#">
+				<i class="cmd-widget icon fas fa-2x fa-plus-square na_cons_up cursor tooltips" data-type="action"> </i>
+                <br>
+          		<i class="cmd-widget icon fas fa-2x fa-minus-square na_cons_down cursor" data-type="action" ></i>
+                
+			</div>
+      		<div class="naconsinfo">
+				<i class="icon fas fa-times cancel tooltips" style="display:none;"> </i>
+              	<i class="on tooltips" style="display:none;"> </i>
+              	<i class="anticipation tooltips" style="display:none;"> </i>
+              	<i class="off tooltips" style="display:none;"> </i>
+			</div>
+		</div>
+		
+	</div>
+  
+     
+  
+  	<div class="room">
+		<div class="room-temperature h-relative">
+			<span class="hide natemp#id#">#temperature#</span>
+			<span class="tempent"><span class="tempdec decimal"></span></span>
+		</div>
+      	<div class="room-setpoint circle-setpoint h-relative">
+			<span class="hide nacons#id#">#consigne#</span>
+			<span class="consent"><span class="consdec decimal"></span></span>
+			<div class="nacontrol" style=" margin-top: 0px; width: ; height: ;  ">
+				<i class="icon fas fa-2x fas fa-plus-circle na_cons_up cursor tooltips"> </i>
+				<br>
+                <i class="icon fas fa-2x fa-minus-circle na_cons_down cursor" style=""></i>
+			</div>
+		</div>
+		
+	</div>
+                            						
+ <!-- *******************  -->
+							
+<script>
+	var consigne = 	$('.eqLogic[data-eqLogic_uid=#uid#] .nacons#id#').html();//'#consigne#';
+	var temperature = $('.eqLogic[data-eqLogic_uid=#uid#] .natemp#id#').html();//'#temperature#';         
+	$('.eqLogic[data-eqLogic_uid=#uid#] .na_cons_up').on('click', function () {
+				//jeedom.cmd.execute({id: '#set_plus_one_id#'});
+				//temp = $(".state[data-cmd_id='#temperature_order_id#']").html()
+              	var oldCons = 	$('.eqLogic[data-eqLogic_uid=#uid#] .nacons#id#').html();//'#consigne#';
+              	//oldCons = consigne;
+				var newCons = parseFloat(oldCons) + 0.5;
+              	console.log('na_cons_up oldCons: ' + oldCons);
+              	console.log('na_cons_up newCons: ' + newCons);
+				$('.eqLogic[data-eqLogic_uid=#uid#] .nacons#id#').html(newCons);
+              	updateconsinfos();
+              	/*$('.eqLogic[data-eqLogic_uid=#uid#] .naconsinfo .cancel').show();
+              	window.setTimeout(function(){
+                     $('.eqLogic[data-eqLogic_uid=#uid#] .naconsinfo .cancel').hide();
+                  }, 2000);*/
+              	$('.eqLogic[data-eqLogic_uid=#uid#] .naconsinfo .cancel').fadeIn( 100 ).delay( 1500 ).slideUp( 100 );
+              	
+              	var cmd = $(this).parent().attr('data-cmd_id');
+              	//console.log('cmd: ' + cmd)
+              	//jeedom.cmd.execute({id: cmd, value: {'title': newTemp}});
+              	//.find('.expressionAttr[data-l1key=cmd]');
+			});
+	
+  	$('.eqLogic[data-eqLogic_uid=#uid#] .na_cons_down').on('click', function () {
+		//jeedom.cmd.execute({id: '#set_minus_one_id#'});
+		var oldCons = 	$('.eqLogic[data-eqLogic_uid=#uid#] .nacons#id#').html();//'#consigne#';
+		var newCons = parseFloat(oldCons) - 0.5;
+		//$('.eqLogic[data-eqLogic_uid=#uid#] .nacons#id#').html(newCons).trigger('change');
+		$('.eqLogic[data-eqLogic_uid=#uid#] .nacons#id#').html(newCons);
+			updateconsinfos();
+      
+      	var cmd = $(this).parent().attr('data-cmd_id');
+              	//console.log('cmd: ' + cmd)
+              	//jeedom.cmd.execute({id: cmd, value: {'title': newTemp}});
+              	//.find('.expressionAttr[data-l1key=cmd]');
+	});
+
+			 
+              
+	function updateconsinfos() {
+		//console.log('na_cons changed')                                                
+		//consigne = 	$('.eqLogic[data-eqLogic_uid=#uid#] .nacons#id#').html();
+		var consigne = 	$('.eqLogic[data-eqLogic_uid=#uid#] .nacons#id#').html();//'#consigne#';
+      	console.log('updateconsinfos: na_cons changedto: ' + consigne);
+		consigneent = Math.trunc(consigne);
+		console.log('updateconsinfos: consigneent: ' + consigneent);
+		consignedec = Math.round((consigne-consigneent)*10);
+		console.log('updateconsinfos: consignedec: ' + consignedec);
+		if (consigne < 10) {
+			$('.eqLogic[data-eqLogic_uid=#uid#] .consent').html("0"+consigneent  + '<span class="consdec decimal"></span>');
+		} else {
+			$('.eqLogic[data-eqLogic_uid=#uid#] .consent').html(consigneent+'<span class="consdec decimal"></span>');
+		}
+		$('.eqLogic[data-eqLogic_uid=#uid#] .consdec').empty().html(consignedec);
+		$('.eqLogic[data-eqLogic_uid=#uid#] .value-consigneoff#id#').hide();
+	}
+	function updatetempinfos() {
+      	var temperature = $('.eqLogic[data-eqLogic_uid=#uid#] .natemp#id#').html();//'#temperature#'; 
+		var temperatureent = Math.trunc(temperature);
+		var temperaturedec = Math.round(temperature*10-temperatureent*10);
+		if (temperature < 10) {
+			$('.eqLogic[data-eqLogic_uid=#uid#] .tempent').html("0"+temperatureent + '<span class="tempdec decimal"></span>');
+		} else {
+			$('.eqLogic[data-eqLogic_uid=#uid#] .tempent').html(temperatureent + '<span class="tempdec decimal"></span>');
+		}
+		//$('.eqLogic[data-eqLogic_uid=#uid#] .consdec').empty().html(consignedec);
+		$('.eqLogic[data-eqLogic_uid=#uid#] .tempdec').empty().text(temperaturedec);
+	}
+          
+	$('.eqLogic[data-eqLogic_uid=#uid#] .aaaa-nacons#id#').on('change',
+        updateconsinfos
+	);	
+	
+	jeedom.cmd.update['#id#'] = function(_options) {
+			// Récupération des valeurs
+			//var state = _options.display_value;
+			//var stateListe = state.split(",");			
+			updatetempinfos();
+    		updateconsinfos();
+          	
+			var programme_origine = '#planning#';
+				var programme = '#planning#';
+			var mode_origine = '#modetech#';
+				var mode = '#modetech#';
+			var batterie = '50%';
+			var wifi = '';
+			var debug = "";
+			//$('.eqLogic[data-eqLogic_uid=#uid#] .mostion_icon').css('color', '#8ddb34!Important');
+			// TEMPERATURE
+			
+			/*if (temperatureent == 11) {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .tempdec').empty().attr('style', 'left:20px;');
+			} else if (temperatureent == 21 || temperatureent == 31) {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .tempdec').empty().attr('style', 'left:31px;');
+			} else if (temperatureent >= 10 && temperatureent < 20) {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .tempdec').empty().attr('style', 'left:31px;');
+			} else {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .tempdec').empty().attr('style', 'left:42px;');
+			}
+            */
+			
+
+			
+			
+
+			// MODE
+			debug += " - mode:"+mode;
+			if (mode == "Off") $('.eqLogic[data-eqLogic_uid=#uid#] .IMGmode#id#').empty().attr('src', "plugins/naEnergie/core/template/dashboard/cmd.info.string.Netatmo_therminfo/manual.png");
+			else if (mode == "Manuel") $('.eqLogic[data-eqLogic_uid=#uid#] .IMGmode#id#').empty().attr('src', "plugins/naEnergie/core/template/dashboard/cmd.info.string.Netatmo_therminfo/manual.png");
+			else if (mode == "Programme") $('.eqLogic[data-eqLogic_uid=#uid#] .IMGmode#id#').empty().attr('src', "plugins/naEnergie/core/template/dashboard/cmd.info.string.Netatmo_therminfo/schedule.png");
+			else if (mode == "away") $('.eqLogic[data-eqLogic_uid=#uid#] .IMGmode#id#').empty().attr('src', "plugins/naEnergie/core/template/dashboard/cmd.info.string.Netatmo_therminfo/away.png");
+			else if (mode == "hg") $('.eqLogic[data-eqLogic_uid=#uid#] .IMGmode#id#').empty().attr('src', "plugins/naEnergie/core/template/dashboard/cmd.info.string.Netatmo_therminfo/hg.png");
+			else $('.eqLogic[data-eqLogic_uid=#uid#] .IMGmode').hide();
+
+			// PROGRAMME
+          //$('.eqLogic[data-eqLogic_uid=#uid#] .mostion_icon').css('color', '#8ddb34!Important');
+			debug += " - programme:"+programme;
+			var programme_taille = programme.length;
+			debug += " - taille:"+programme_taille;
+//			$('.cmd[data-cmd_id=#id#] .programmefixe').text(debug);
+			$('.eqLogic[data-eqLogic_uid=#uid#] .programmedefile#id#').text(programme)
+			if (programme_taille < 25) {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .programmedefile#id#').hide();
+				$('.eqLogic[data-eqLogic_uid=#uid#] .programmefixe#id#').text(programme);
+			} else {
+				$('.eqLogic[data-eqLogic_uid=#uid#] .programmedefile#id#').text(programme);
+				$('.eqLogic[data-eqLogic_uid=#uid#] .programmefixe#id#').hide();
+			}
+
+			$('.cmd[data-cmd_id=#id#]').attr('title','Valeur du '+_options.valueDate+', collectée le '+_options.collectDate);
+		}
+		
+       	jeedom.cmd.update['#id#']({display_value:'#state#',valueDate:'#valueDate#',collectDate:'#collectDate#',alertLevel:'#alertLevel#'});
+	</script>	
+    
+
+    
+	    
+
+  						
+						
+
+  
+		
+	
+        <div style="float: center; margin-top: 0px; width: ; height: ; font-size: 15px; text-align: ; ">
+				<i class="icon fas fa-2x fa-minus-square bt_minus cursor" title="Cons-" style="font-size: 1.6em;top: 2px;"> </i>
+						  <!--<span style="font-size: 1.6em; margin-right: ;" id="thermo_icon#id#"></span>thermometre-->
+				<span class="valcons" style="font-size : 30px; font-weight: ;"></span>
+				<span class="unitcons" style="font-size : 15px; font-weight: ;">°</span><!--consigne none-->
+						
+				<i class="icon fas fa-2x fa-plus-square bt_plus cursor tooltips" title="Cons+" style="font-size: 1.6em;margin-top: 2px;"></i>
+			</div>
+      
+         <div class="cmd cmd-widget " >
+        <div class="content-xs tooltips cmd cmd-widget etat cursor" data-type="action" data-cmd_id="#etat_id#" data-version="dashboard" 
+             data-eqlogic_id="#id#" data-template="tmplicon" data-subtype="other" data-version="dashboard">
+    		<span class="iconCmd"><i class="icon_orange icon fas fa-power-off icon_etat"></i></span>
+  		</div>
+    </div>
+      
+      
+   
+   	<br>
+      
+      </center> 
+      
+      
+    
+	<div class="smartplug_Infos_#uid# Pan_one">
+            
+			<div class="tooltips cmd cmd-widget #lastDetection_history#" data-type="info" data-subtype="string" data-cmd_id="#lastDetection_id#" data-cmd_uid="cmd#lastDetection#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #lastDetection_collectDate#">
+                <div class="content-xs">
+                    <span   class="cmdName">Last Detection: </span> 
+                    <strong class="state">#lastDetection_human#</strong>
+                </div>
+			</div> 
+      		<br>
+           
+          	<div class="tooltips cmd cmd-widget #motionState_history#" data-type="info" data-subtype="binary" data-cmd_id="#motionState_id#" data-cmd_uid="cmd#motionState#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #motionState_collectDate#">
+                <div class="content-xs">
+                    <span   class="cmdName">motion State: </span> 
+                    <strong class="state value#motionState_id#"> #motionState#</strong>
+                  <span class="icon jeedom-mouvement"> </span>
+                  <!-- <span class="fas fa-rss mostion_icon" style="margin-right: -3px;"> </span>-->
+                </div>
+			</div> 
+         </div>
+        
+	<div class="smartplug_Infos_#uid# Pan_two" style="display : none;">
+     <table class="smartplug_consigne_#uid#" style="width: 80%; height:;">
+     <tr>       
+    <td colspan="3" style="text-align: center;">
+      		<center>
+          <div class="tooltips cmd cmd-widget #consigne_history#" data-type="info" data-subtype="numeric" data-cmd_id="#consigne_id#" data-cmd_uid="cmd#consigne_id#_#id#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" title="Valeur du: #consigne_collectDate#">
+                <div class="content-xs">
+                    <span   class="cmdName">consigne: </span> 
+                    <strong class="state value#consigne_id#">  #consigne#</strong>
+                </div>
+			</div> 
+              </center>
+     </td>
+  </tr>
+       
+       		<tr>
+                   <td style="width: 20px; text-align: left; font-size : 0.9em;"></td>
+                   
+                   <td style="width: 122px; text-align: center; font-size : 0.9em;">
+
+<div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="default" data-cmd_id="#consigne_id#" data-cmd_uid="#uid#" data-version="#version#" data-eqLogic_id="#id#">
+  
+  <div class="content-xs">
+    <div class="slider" value="#consigne#" id="sliderdch">
+		<span  class="ui-slider-handle" id="custom-handle"></span>
+    </div>
+  </div>
+<script>
+    //$('.eqLogic[data-eqLogic_uid=#uid#] .refresh')
+    $(".eqLogic[data-eqLogic_uid=#uid#] .slider.slider-horizontal").css('z-index',1);
+    jeedom.cmd.update['#consigne_id#'] = function(_options){
+      $(".cmd[data-cmd_id=#consigne_id#] .slider").slider({
+        min: ('1' == '') ? 0 : parseInt('1'),
+        max: ('100' == '') ? 100 : parseInt('100'),
+        value: ('#consigne#' == '') ? 0 : parseInt(_options.display_value),
+        slide: function(event, ui) {
+          //$(".value#consigne_id#").show()
+          $(".value#consigne_id#").html(ui.value);
+        }
+      })
+    }
+    jeedom.cmd.update['#consigne_id#']({display_value:'#consigne#'});
+    
+    $(".eqLogic[data-eqLogic_uid=#uid#] .slider").on('slidestop', function (event,ui) {
+      jeedom.cmd.execute({id: '#consigne_id#', value: {slider: ui.value}});
+                          
+      //$(".value#consigne_id#").hide();
+    });
+  </script> 
+ 
+</div>                     
+                     
+                     
+                     
+                     
+                     
+                     
+
+                     
+                     
+                     
+                     
+                    
+                    
+                   </td>
+                   
+                   <td style="width: 20px; text-align: right; font-size : 0.9em;">100<br></td>
+           </tr>
+              		
+          
+  </table> 
+    
+ 
+                 
+   
+
+
+  
+  
+  
+  
+  	</div> 
+
+ <div class="cmd-widget" data-type="action" >
+  		<div class="content-xs">
+    		<a class="btn btn-sm btn-default action tooltips">+</a>
+  		</div>
+
+	</div>
+    
+    
+    <div class="cmd-widget one" data-type="action"><i class="icon fas fa-2x fa-plus-square na_cons_up cursor tooltips" style=""> </i> </div>
+    <div class="two"> </div>
+
+ 
+</div><!--  eq_body  -->
+
+
+ 
+   
+   
+    
+ 
+  
+
+
+
+
+
+ <div class="table_bottom" style="">
+	<table style="position:absolute; right:0px; bottom:0px; width: 100%; height:" cellspacing="0" cellpadding="0" border="0">	
+		
+		<tr style="height: 22px;">
+				<td class="td_bot12" style="width: 18px; text-align: left;">
+					
+					 <!-- 
+					 <tr style="height: 22px; position:absolute; right:0px; bottom:0px; width: 100%; border-radius:#border-radius#; color: #color#; #style#">
+					 info autres   
+				<span class="pull-left cursor"><i class="icon_orange icon fas fa-power-off infcmd_ico"></i></span>--> 
+                  <span class="infcmd pull-left cursor" title='Autres infos' style="margin-left:3px;">
+		<i class="icon_orange icon fas fa-info-circle infcmd_ico"></i>
+  </span>
+                  
+								
+					<div class="infhtm" style="display: none"> 
+						
+                        <div class="cmd cmd-widget">
+                            <div class="content-xs">
+                                <span class="cmdName">motionTstamp: </span> 
+                                <strong class="DeviceName">#motionTstamp#</strong>
+                            </div>
+                        </div>
+                        </br>
+                        <div class="cmd cmd-widget">
+                            <div class="content-xs">
+                                <span class="cmdName">macAddress: </span> 
+                                <strong class="macAddress">#macAddress#</strong>
+                            </div>
+                        </div>
+                        </br>
+                        <div class="cmd cmd-widget">
+                            <div class="content-xs">
+                                <span class="cmdName">Tentatives échouées: </span> 
+                                <strong class="lastCom">#numberTryWithoutSuccess#</strong>
+                            </div>
+                        </div>
+                    </div>
+					
+					
+					
+					
+				  </td>
+				<td class="td_bot2" style="text-align: center;">
+				</td>
+				<td class="td_bot3" style="width: 18px;text-align: right;">
+					  
+					  <i class="fas fa-retweet cursor tooltips changecmd noRefresh" title='Changer commandes' style="margin-right: 3px;"></i>
+						
+					  
+				  </td>
+			</tr>
+	
+				<script>
+		if ('#numberTryWithoutSuccess#' == 0) {
+			//$('.eqLogic[data-eqLogic_uid=#uid#] .infcmd_ico').css('color', '#8ddb34!important');
+          	$('.eqLogic[data-eqLogic_uid=#uid#] .infcmd_ico').removeAttr( 'style' );
+          	//console.log('numberTryWithoutSuccess: ' + #numberTryWithoutSuccess#);
+		}else if ('#numberTryWithoutSuccess#' >= 3) {
+			//$('.eqLogic[data-eqLogic_uid=#uid#] .infcmd_ico').css('color', '#8ddb34!important');
+          	$('.eqLogic[data-eqLogic_uid=#uid#] .infcmd_ico').attr('style', 'color : #C37D28!important');
+          	//console.log('numberTryWithoutSuccess: ' + #numberTryWithoutSuccess#);
+		} else if('#numberTryWithoutSuccess#' >= 60 || '#eqstate#' != 'ok') {
+			//console.log('numberTryWithoutSuccess: ' + #numberTryWithoutSuccess#)
+			$('.eqLogic[data-eqLogic_uid=#uid#] .infcmd_ico').attr('style', 'color : #B93A3E!important');
+		}	
+					 
+					//**************************************//	
+					$('.eqLogic[data-eqLogic_uid=#uid#] .infcmd').on('click', function () {
+						$('.eqLogic[data-eqLogic_uid=#uid#] .infcmd').popover({
+							container: "body",
+							html: true,
+							placement: "auto",
+							selector : true,
+							//title: false, //"<strong>Liste des équipements</strong>",
+							content: function () {return $('.eqLogic[data-eqLogic_uid=#uid#] .infhtm').html(); } ,
+							
+						})
+							.on("show.bs.popover", function () { 
+								$(this).data("bs.popover").tip()
+								.css({
+									"max-width": "500px",
+									"max-height":  "400px",
+									//overflow: "auto",
+									"overflow-y": "auto",
+									"background-color": "#474646",//'background-color',
+									"background": "#474646",
+								
+								}); 
+								setTimeout(function () {
+									$('.eqLogic[data-eqLogic_uid=#uid#] .infcmd').popover('hide');
+								}, 8000);
+							});
+						$('.eqLogic[data-eqLogic_uid=#uid#] .infcmd').popover('show'); 
+					});
+					
+                  
+                  
+					
+					///////////////////////
+					$('.eqLogic[data-eqLogic_uid=#uid#] .changecmd').on('click',function () {
+                        $('.eqLogic[data-eqLogic_uid=#uid#] .Pan_two').toggle();
+                        $('.eqLogic[data-eqLogic_uid=#uid#] .Pan_one').toggle();
+
+                        //$('.eqLogic[data-eqLogic_uid=#uid#] .TotalConso').toggle();
+                       // $('.eqLogic[data-eqLogic_uid=#uid#] .currentRunTime').toggle();
+                    });
+					
+					</script>
+		</table>		
+	</div>
+	 <!-- fin table_bottom    -->
+
+
+        
+<script>
+		if ('#mostionState#' == '1' || '#mostionState#' == 1) {
+            $('.eqLogic[data-eqLogic_uid=#uid#] .mostion_icon').css('color', '#8ddb34!Important');
+        } else if ('#mostionState#' == '0' || '#mostionState#' == 0) {
+            $('.eqLogic[data-eqLogic_uid=#uid#] .mostion_icon').css('color', 'blue!Important');
+        }
+  		///////////////
+  		
+
+///////////////////////
+$('.eqLogic[data-eqLogic_uid=#uid#] .etat').on('click', function() {
+    if('#etat#' == '1'){
+        jeedom.cmd.execute({id: '#setMoff_id#'});  
+    }else{
+        jeedom.cmd.execute({id: '#setMon_id#'});
+    }
+});
+
+
+
+
+
+
+</script>
+	
+</div>
+<!-- Fin eqLogic-widget  -->

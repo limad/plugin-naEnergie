@@ -1,0 +1,893 @@
+<div class="eqLogic-widget eqLogic" style="height : 160px; width: 350px;border:#border#;border-radius:#border-radius#;
+		background-color: #background-color#;color: #color#;#style#" 
+		data-eqLogic_id="#id#" data-eqLogic_uid="#uid#" data-version="#version#">
+		
+		<link href="plugins/migoControl/core/template/dashboard/bootstrap-slider.css" rel="stylesheet">
+    
+	<div>
+		
+		 <table style="width: 351px; height: 20px;border-radius:#border-radius#; color: #color#;#style#" cellspacing="0" cellpadding="0" border="0">
+      <tbody>
+        <tr>
+          <td style="width: 22px;text-align: center;">
+			  
+			
+		<!-- heatstatus on off-->
+		<i class="#heatstatus_history# icon jeedom-feu chaudiere tooltips noRefresh" data-cmd_id='#heatstatus_id#' title="Chaudière arrêtée" style="top: 3px;color:#3498db;"></i>
+		 <script>
+				if (#heatstatus#==1) { <!--|| #consigne#>#temperature#-->
+							$('.eqLogic[data-eqLogic_uid=#uid#] .chaudiere').css('color', '#e0550f');
+							$('.eqLogic[data-eqLogic_uid=#uid#] .chaudiere').attr("title","Chaudière en chauffe");
+					}
+					
+          </script>
+           
+          </td>
+          <td style="width: 22Px;text-align: center;">
+			  <!-- anticipation -->
+		<i class="icon divers-circular114 anticipation tooltips noRefresh" title="Pas d'anticipation en cours" style="top: 3px;color:#3498db;"></i>
+		 <script>
+				if ('#anticipation#'=='TRUE') {
+							$('.eqLogic[data-eqLogic_uid=#uid#] .anticipation').css('color', 'white');
+							$('.eqLogic[data-eqLogic_uid=#uid#] .anticipation').attr("title","Anticipation en cours");
+					}
+		
+					
+          </script>
+			  
+          </td>
+          <td style="width: ;text-align: center;">
+			 <!-- nom du thermostat -->			
+		<center class="widget-name">
+			
+			
+			
+		<a href="#eqLink#" style="font-size : 1.1em;#hideEqLogicName#; position: relative;top:-1px;">#name_display# 
+			<span style="font-size: 0.85em;position: relative;top:-0px;">#object_name#</span>
+		</a>
+		</center>
+			  </td>
+          <td style="width: 22px;text-align: center;">
+			  <!-- flash update -->	
+			  <span class="statusCmd" style="margin-top: 3px;margin-right: 3px;"></span>
+				
+				<span class="cmd cmd-widget" data-cmd_id="#setecstemp_id#" style="display:none;"></span>
+				<span class="cmd cmd-widget" data-cmd_id="#hwboost_id#" style="display:none;"></span>
+				<span class="cmd cmd-widget" data-cmd_id="#setsysmode_id#" style="display:none;"></span>
+                <span class="cmd cmd-widget" data-cmd_id="#refresh_id#" style="display:none;"></span>
+                <span class="cmd cmd-widget" data-cmd_id="#program_id#" style="display:none;"></span>
+                <span class="cmd cmd-widget" data-cmd_id="#away_id#" style="display:none;"></span>
+                <span class="cmd cmd-widget" data-cmd_id="#hwboost_id#" style="display:none;"></span>
+                <span class="cmd cmd-widget" data-cmd_id="#off_id#" style="display:none;"></span>
+				<span class="cmd cmd-widget" data-cmd_id="#endtime_change#" style="display:none;"></span>
+				<span class="cmd cmd-widget" data-cmd_id="#calendar_change#" style="display:none;"></span>
+				
+				<!-- <span class="cmd cmd-widget" data-cmd_id="#hg_id#" style="display:none;"></span>
+                <span class="cmd cmd-widget" data-cmd_id="#max_id#" style="display:none;"></span>-->
+          </td>
+          <td style="width: 22px;text-align: center;">
+			    <i class='fas fa-refresh pull-right cursor refresh tooltips' title='Rafraîchir' style="margin-top: 3px;margin-right: 3px;"></i>
+				<script>
+                    $('.eqLogic[data-eqLogic_uid=#uid#] .refresh').on('click', function () {
+                        jeedom.cmd.execute({id: '#refresh_id#'});
+                    });
+                </script>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+ 
+				
+<!-- **************************************************************************************************************************** -->			
+		
+       
+       
+       
+       
+		
+		
+		
+		
+					
+	
+      <div class="row" style="width:350px; margin-top: -5px" border="0">
+            <div class='col-xs-6'style='width:200px' border="0"><!--  col-1: temperature mesurée, icones commandes..... -->
+                <br/>
+                
+                <center style='margin-top: -5px'>
+				<!-- temperature mesurée-->
+                <span class="heatstatus #temperature_history# tooltips" data-cmd_id="#temperature_id#" 
+					style="font-size : 1.8em; font-weight: bold" title="Température mesurée du #temperature_collectDate#">#temperature# °   </span>
+				
+				<span class="outbasetemp #outbasetemp_history# tooltips" data-cmd_id="#outbasetemp_id#" 
+					style="font-size : 0.9em; margin-left : -10px;" title="Température Ext du #outbasetemp_collectDate#">&nbsp;&nbsp;*&nbsp;Ext: #outbasetemp#°
+                </span>
+				</center>
+
+
+			
+			
+				<!-- fa-shower-->
+                <i class="fas fa-cog program cursor tooltips" title="Mode Auto - Hiver" style="font-size: 1.9em;margin-left: 10px;color:#3498db"></i>
+                <i class="icon loisir-runner5 away cursor tooltips" title="Mode absent" style="font-size: 1.5em;margin-left: 8px;color:#3498db"></i>
+				<i class="icon maison-tub1 hwboost cursor tooltips" title="ECS Boost" style="font-size: 2em;margin-left: 8px;color:#3498db"></i>
+                <i class="fas fa-power-off off cursor tooltips" title="Mode Anti-gel OFF" style="font-size: 1.7em;margin-left: 8px;color:#3498db"></i>
+				
+
+				<!-- planing et profiles --> 
+				
+				<div class="infoz" style="height: 36px; display : block;position: relative; bottom: 0px;">
+				<span class="calendar tooltips" style="cursor:default;font-size: 0.9em;margin-left: 5px;" title="Planning en cours"></span>
+				<span class="planning tooltips" style="cursor:default;font-size: 0.9em;position: relative; left: 5px;"  title=" Profile en cours"></span>
+				</div>
+               
+				
+                
+               
+        
+                	 
+	<!-- zone slider ecs temperature **************************************************  -->			 
+			<div class="ecsslidz" data-type="action" data-subtype="sliderecs"  data-cmd_id="#ecstemp#" 
+				 style="width: 90%; display : none; height : 36px; position: relative; top: 10px; left: 5px;" >
+						
+			
+			<table style="width: 100%; background-color: #background-color#" cellspacing="0" cellpadding="0" border="0">
+				<tbody>
+					<tr>
+					<td style="width: 18px; text-align: left; font-size : 0.9em;">#ecsmin#
+					</td>
+					<td style="text-align: center; font-size : 0.9em;">
+					<input class="sliderEcs tooltips noRefresh" type="text" data-slider-min=#ecsmin# data-slider-max=#ecsmax# data-slider-step="1" 
+						data-slider-tooltip=""  data-slider-focus="true" style="width : 80%;"  data-slider-value=#ecstemp# >
+					</input>
+					</td>
+					<td style="width: 18px; text-align: right; font-size : 0.9em;">#ecsmax#<br></td>
+					</tr>
+				</tbody>
+			</table>			
+			 	<script>
+					$.include(['plugins/migoControl/core/template/dashboard/bootstrap-slider.js'], function (){
+						$(".eqLogic[data-eqLogic_uid=#uid#] .sliderEcs").bootstrapSlider();
+						$(".eqLogic[data-eqLogic_uid=#uid#] .sliderEcs").on("slide",function(slideEvt) {
+						//$(".eqLogic[data-eqLogic_uid=#uid#] .spanConsigne").text(slideEvt.value);
+					});
+					
+					$(".eqLogic[data-eqLogic_uid=#uid#] .sliderEcs").on("slideStop", function(slideEvt) {
+							jeedom.cmd.execute({id:'#setecstemp_id#', value: {'message': slideEvt.value}});
+							sleep(1);
+							$('.eqLogic[data-eqLogic_uid=#uid#] .infoz').toggle();
+							
+						});
+					});
+					
+					
+					
+                    </script>	
+						 
+		</div>		 
+		<!-- fin div  zone slider ecs temperature**************************************************  -->	
+						 
+					 
+					 
+                <script>
+                   
+					$('.eqLogic[data-eqLogic_uid=#uid#] .away').on('click', function () {
+						if ('#modetech#' == 'away' || '#modetech#' == 'manaway'){
+							//jeedom.cmd.execute({id: '#away_id#', value: {'awayact': 'false'}});
+						}
+						else {
+							jeedom.cmd.execute({id: '#away_id#', value: {'awayact': 'true'}});
+						}
+						
+                    });
+					$('.eqLogic[data-eqLogic_uid=#uid#] .hg').on('click', function () {
+                        jeedom.cmd.execute({id: '#hg_id#'});
+                    });
+					$('.eqLogic[data-eqLogic_uid=#uid#] .program').on('click', function () {
+                        jeedom.cmd.execute({id: '#program_id#'});
+                    });
+					$('.eqLogic[data-eqLogic_uid=#uid#] .max').on('click', function () {
+                        jeedom.cmd.execute({id: '#max_id#'});
+                    });
+					$('.eqLogic[data-eqLogic_uid=#uid#] .off').on('click', function () {
+                        jeedom.cmd.execute({id: '#off_id#'});
+                    });
+					
+					$('.eqLogic[data-eqLogic_uid=#uid#] .hwboost').on('click', function () {
+						
+						if ( '#ecsBoostState#'=='FALSE'){
+							jeedom.cmd.execute({id: '#hwboost_id#', value: {'acthwb': 'true'}});
+						}
+						else {
+							//jeedom.cmd.execute({id: '#hwboost_id#', value: {'acthwb': 'false'}});
+						}
+							
+                    });
+                    
+                    					
+                    if ('#modetech#' == 'away' || '#modetech#' == 'manaway') {
+                        $('.eqLogic[data-eqLogic_uid=#uid#] .away').css('color', 'white');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .calendar').append('<i class="fas fa-times-circle-o awayoff cursor tooltips" title="Désactiver le mode Absent" style="font-size: 0.9em;margin-left: 0px;color:red"></i>');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .calendar').append('   Absent <i class="fas fa-arrow-right" style="font-size: 0.8em" title=""></i> ');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .calendar').append(' <i class=" awaypicker cursor tooltips" title="modifier..." style="font-size: 0.9em;margin-left: 0px"> #awayendtime#</i> ');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .calendar').css('display', 'block');
+					} 
+					if ('#modetech#' == 'manual' || '#modetech#' == 'manaway') {				
+						$('.eqLogic[data-eqLogic_uid=#uid#] .planning').append('<i class="fas fa-times-circle-o manoff cursor tooltips" title="Désactiver le mode Manuel" style="font-size: 0.9em;margin-left: 0px;color:red"></i>');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .planning').append('   Manuel <i class="fas fa-arrow-right" style="font-size: 0.8em" title=""></i>');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .planning').append(' <i class=" datetimepicker cursor tooltips" title="modifier..." style="font-size: 0.9em;margin-left: 0px"> #endtime#</i> '); 
+						$('.eqLogic[data-eqLogic_uid=#uid#] .planning').css('display', 'block');
+					} 
+					
+					
+					else if ('#modetech#' == 'program') {
+						$('.eqLogic[data-eqLogic_uid=#uid#] .program').css('color', 'white');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .planning').append('#planning# <i class="fas fa-arrow-right" style="font-size: 0.8em" ></i> #endtime# - #nextplanning#');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .planning').css('display', 'block');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .calendar').append('#calendar#');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .calendar').css('display', 'block');
+					} 
+					
+					
+					if ('#modetech#' == 'hg') {
+						$('.eqLogic[data-eqLogic_uid=#uid#] .hg').css('color', 'white');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .calendar').append('Mode AntiGel <i class="fas fa-arrow-right" style="font-size: 0.8em" ></i> OFF');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .calendar').css('display', 'block');
+						
+					} else if ('#modetech#' == 'summer') {
+						//$('.eqLogic[data-eqLogic_uid=#uid#] .max').css('color', 'white');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .planning').append('Mode Été');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .planning').css('display', 'block');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .calendar').append('Chauffage eteint ');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .calendar').css('display', 'block');
+						
+					} else if ('#modetech#' == 'off') {
+						$('.eqLogic[data-eqLogic_uid=#uid#] .off').css('color', 'white');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .planning').append('Mode Off-AntiGel');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .planning').css('display', 'block');
+					} 
+					
+					
+					
+					if ('#anticipation#'=='TRUE') {
+							$('.eqLogic[data-eqLogic_uid=#uid#] .anticipation').css('color', 'white');
+							$('.eqLogic[data-eqLogic_uid=#uid#] .anticipation').attr("title","Anticipation en cours");
+					}
+					if (#heatstatus#==1) { <!--|| #consigne#>#temperature#-->
+							$('.eqLogic[data-eqLogic_uid=#uid#] .chaudiere').css('color', '#e0550f');
+							$('.eqLogic[data-eqLogic_uid=#uid#] .chaudiere').attr("title","Chaudière en chauffe");
+					}
+					
+                </script>
+            </div>
+			
+<div class='col-xs-6' style='width:150px'><!-- col-2 Calendrier consigneset..... -->
+				<!-- col-2 z1 modeplan -->
+				<!--/////////**************************************************************//////////-->
+	<div class="cmd cmd-widget modetemp" data-type="action" data-subtype="slider" data-cmd_id="#consigneset_id#" 
+						style="height : 75px;display : block;position: relative; top: 20px; right :-27px;">
+				
+				
+				<!--#background-color# background-color:grey-->
+				<!--tableau--><!--z1 icone thermometre -->
+				<table style="width: 100%; height: 100%; ; background-color: #background-color# " cellspacing="0" cellpadding="0" border="0" >
+				<!--z1 icone thermometre -->
+					<td style="width: 24px; text-align: right; vertical-align: middle;">
+						<!--<span class="pull-left iconCmd#consigneset_id#" style="position: relative;margin-top : 0px; font-size: 3em;height:0px;">-->
+									
+						<span class="pull-left #consigne_history# tooltips noRefresh iconCmd#consigneset_id#" 
+							data-cmd_id="#consigne_id#" style="font-size: 3em;" title="Consigne history">
+						</span>
+					</td>
+					
+					<!-- z2 cercle selecteur consigneset -->
+					<td style="text-align: center; ; vertical-align: bottom;">
+					
+						<!-- <span style="font-size: 1.8em; font-weight: bold;" id="#valeur#id#" >#consigne#</span> -->
+						<!--color : #283545 vert#94CA02 blue#3498db grey#8E8E8E-->
+						<input 	disabled
+								class="dial tooltips noRefresh"
+								data-fgcolor='#FFFFFF'
+								data-bgcolor='#3498db'
+								data-inputcolor='#FFFFFF'
+								data-angleoffset='-125'
+								data-anglearc='250'
+								data-step='0.5'
+								data-lineCap=round
+								value="#consigne#"
+								data-thickness=".15"
+								data-skin="tron"
+								data-min="7"
+								data-max="28"
+								data-width="90"
+								data-height="75"
+								title="Consigne du #consigne_collectDate#"
+								href="#consigne_history#"
+								data-configure="cursor:true"
+								data-cmd_id="#consigne_id#" 
+								data-style=" text-align: center; width: 110%; height: 1px; border: 0px; 
+								background: none; font-style: normal; font-variant: normal; font-weight: bold; font-stretch: normal; font-size: 1px; 
+								line-height: normal; font-family: Arial; text-align: center;  padding: 0px; -webkit-appearance: none; round: rounded" 
+								
+								/>
+						
+						
+						
+						
+						<script>
+                        $.include(['plugins/migoControl/core/template/dashboard/jquery.kontrol.js'], 
+                        function () {
+                            $(".eqLogic[data-eqLogic_uid=#uid#] .cmd[data-cmd_id=#consigneset_id#] .dial").dial({
+                                
+                                noScroll: true,
+                                
+                                release : function(v) {
+                        jeedom.cmd.execute({id: '#consigneset_id#', value: {'title': v}});
+                    },
+
+                    draw: function() {
+                        $(this.i).css('font-weight', 'normal').css('font-size', '16pt');
+                    },
+                  
+                    format : function (value) {
+                        return parseFloat(Math.round(value * 10) / 10).toFixed(1) + '°';
+                    }
+                            });
+
+                            if (parseInt('#consigne#') > 21) {
+                                $('.eqLogic[data-eqLogic_uid=#uid#] .iconCmd#consigneset_id#').append('<i class="icon jeedom-thermo-chaud"></i>');
+                            } else if (parseInt('#consigne#') >= 19) {
+                                $('.eqLogic[data-eqLogic_uid=#uid#] .iconCmd#consigneset_id#').append('<i class="icon jeedom-thermo-moyen"></i>');
+                            } else {
+                                $('.eqLogic[data-eqLogic_uid=#uid#] .iconCmd#consigneset_id#').append('<i class="icon jeedom-thermo-froid"></i>');
+                            }
+                        });
+						
+					</script>	
+						
+					</td>
+					
+        
+				</table>
+				</div>
+	<div class="modeplan" style="height : 10px;  display : none;position: relative; top: 5px; left :25px">
+				
+				
+				<center>
+				 <span class="heatstatus" > <!-- style="font-size : 2.10em; font-weight: bold;margin-left : 5px;cursor : default;"-->
+						
+						
+					<i class="fas fa-signal #wifistatus_history# tooltips" data-cmd_id="#wifistatus_id#" style="font-size : 0.9em;"  title="Signal Wifi"> </i> 
+					<span style="font-size: 0.9em">#wifistatus#</span> 
+					<i class="fas fa-rss #rfstatus_history# tooltips" data-cmd_id="#rfstatus_id#" style="font-size : 0.9em;"  title="Signal radio"> </i> 
+					<span style="font-size: 0.9em">#rfstatus#</span> 
+					<i class="fas fa-battery-full #batterie_history# tooltips" data-cmd_id="#batterie_id#" style="font-size : 0.9em;"  title="Niveau de batterie"> </i> 
+					<span style="font-size: 0.9em">#batterie#</span>
+					</span>
+					</br>
+					
+					<span class="modetech"  style="font-size : 0.9em;"  >Mode: #modetech#<!--  -->
+					</span>
+					
+					<!-- selecteur planing 
+					<select class="cmd form-control selectCalendar cursor tooltips" 
+						style="background-color:#cmdColor#;width:100%;border-radius: 10px;hight:0px;" title="Choisir Planinig">#calendar_selector#
+					</select>-->
+					
+					
+					
+					<select class="cmd selectCalendar cursor tooltips" style="background: #background-color#; 
+					color: #cmdColor#; width:100%; 
+					 hight:1px; hight:10px; border-radius: 2px; display:block;outline:none;border: none;font-size: 0.9em;" title="Choisir Calendrier">#calendar_selector#
+					</select><!--form-control #cmdColor# ;-->
+					
+					
+					
+					<script>
+						$('.eqLogic[data-eqLogic_uid=#uid#] .selectCalendar').on('change', function() {
+							jeedom.cmd.execute({id: '#calendar_change#', value: {'message': $(this).value()}});
+						});
+						</script>
+				
+		<!-- 
+		<input id="ex13" type="text" data-slider-ticks="[Winter, Summer, Off]" data-slider-ticks-snap-bounds="30" data-slider-ticks-labels='["$Winter", "$Summer", "$Off"]'/>
+		-->	
+		
+			
+					<!-- date-time-picker 
+					<span class="input-group-addon cursor tooltips" style="font-size: 0.9em; background-color:#cmdColor#;width:80%;
+						border-radius: 5px;" title="Choisir Fin">
+                        <span class="fas fa-calendar" style="color:white"></span>
+                
+                    </span>
+                    
+                    --><!--  -->
+                    
+
+<div class="divhtmm" style="width: 110px; background-color: #8E8E8E;">
+		
+
+         <!--*******************************  --> 
+
+<center style='margin-top: 5px;'>	
+     <div class="slidermode" style=" height: 0px; width: 70px; text-align: center;" >
+				
+			<span tabindex="0" class=" ui-slider-horizontal ui-slider-handle ui-corner-all ui-state-default " 
+			style="width: 36px; color: #43c435; ">
+			</span>
+			<span style="width: 110px ;font-size : 0.9em; margin-left : -12px;">Hiver&nbsp;&nbsp;&nbsp;&nbsp;Eté&nbsp;&nbsp;&nbsp;&nbsp;Off</span>
+			
+	</div > 		
+	</center>
+<style> 
+			
+.slidermode  {
+	background:  #8E8E8E;
+	text: ('llo');
+	height: 20px;
+
+    
+}			
+.slidermode .ui-slider-handle {
+	background: #3498db;
+	width: 36px;
+	height: 20px;
+	top: -1px;
+	margin-left: -18px;
+	border-style:none;
+	font-color: #43c435;
+	font-weight: bold;
+	 
+}		 
+</style>	
+
+                    <script>
+
+//**************************************//
+	if ('#boilermode#'==1) {
+						boilermode='Hiver';
+                        $('.eqLogic[data-eqLogic_uid=#uid#] .sysmodes').css('color', 'white');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .sysmodes').append('Hiver');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .sphiver').css('font-weight', 'bold');
+	} 
+	else if ('#boilermode#'==2) {
+						boilermode='Eté';
+                        $('.eqLogic[data-eqLogic_uid=#uid#] .sysmodes').css('color', 'white');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .sysmodes').append('Eté');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .spete').css('font-weight', 'bold');
+	} 
+	else if ('#boilermode#'==3) {
+						boilermode='Off';
+                        $('.eqLogic[data-eqLogic_uid=#uid#] .sysmodes').css('color', 'white');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .sysmodes').append('Anti-gel');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .spoff').css('font-weight', 'bold');
+	} 
+					
+		</script>
+		
+				 
+    <script>
+		var arsteps = [ "Hiver","Eté", "Off"];
+		$(".eqLogic[data-eqLogic_uid=#uid#] .slidermode").find(".ui-slider-handle").text(boilermode);
+        //$(".eqLogic[data-eqLogic_uid=#uid#] .slidermode").css('background','red');
+        // $('.ui-slider-handle').text('Hello').css({width:36,'text-align': 'center'});
+        
+        jeedom.cmd.update['#setsysmode_id#'] = function(_options){
+            $(".eqLogic[data-eqLogic_uid=#uid#] .slidermode").slider({
+                min: parseInt('0'),
+                max: parseInt('2'),
+                
+                value: parseInt(_options.display_value)-1
+        
+            })
+        }
+        jeedom.cmd.update['#setsysmode_id#']({display_value:'#boilermode#'});
+    
+       
+        $(".eqLogic[data-eqLogic_uid=#uid#] .slidermode").on('slide', function (event,ui) {
+			 
+            $(".eqLogic[data-eqLogic_uid=#uid#] .slidermode").find(".ui-slider-handle").html(arsteps[ui.value]);	
+         });
+         
+         			
+        $(".eqLogic[data-eqLogic_uid=#uid#] .slidermode").on('slidestop', function (event,ui) {
+            jeedom.cmd.execute({id: '#setsysmode_id#', value: {'message': ui.value+1}});
+        //sleep(0);
+        //$('.eqLogic[data-eqLogic_uid=#uid#] .sysmodes').popover('hide');
+        
+        });
+    </script>
+				
+</div> 
+                    
+                    
+                    
+                    
+                    </br>
+                    
+					
+                </center>
+				</div>
+						
+					
+				
+					
+                    
+					
+                   
+						<script>
+							
+						
+						
+						////Mode manuel Off
+						$(function () {
+								$('.eqLogic[data-eqLogic_uid=#uid#] .manoff').on('click',
+									function(){
+										jeedom.cmd.execute({id: '#consigneset_id#', value: {'manoff': 'false'}});
+									}
+						)});
+						////Mode Away Off
+						$(function () {
+								$('.eqLogic[data-eqLogic_uid=#uid#] .awayoff').on('click',
+									function(){
+										jeedom.cmd.execute({id: '#away_id#', value: {'awayact': 'false'}});
+									}
+						)});
+						
+                        ////////////
+						
+						
+						$(function () {
+							$('.eqLogic[data-eqLogic_uid=#uid#] .datetimepicker').datetimepicker({
+								//lang:'ru',
+								value:'fr',
+								lang: 'fr',
+								step: 15,
+								theme:'dark',
+								startDate: '0',
+								minDate: '0',
+								maxDate:'+1971/01/02',
+								minTime: '0',
+								todayButton:'true',
+								//format:	'd/m/Y H:i',
+								//formatDate:	'd/m/Y',
+								<!--onChangeDateTime-->
+								<!--onSelectTime-->
+								onSelectTime:function(dp,$input){
+								jeedom.cmd.execute({id: '#endtime_change#', value: {'message': $input.val()}});
+								}
+							});
+						});
+						
+						//////////////////
+						
+                    
+					
+						</script>
+						<script>
+							$(function () {
+							$('.eqLogic[data-eqLogic_uid=#uid#] .awaypicker').datetimepicker({
+								
+								step: 15,
+								//theme:'dark',
+								startDate: '0',
+								minDate: '0',
+								maxDate:'+1971/01/02',
+								minTime: '0',
+								todayButton:'true',
+								//format:	'd/m/Y H:i',
+								//formatDate:	'd/m/Y',
+								<!--onChangeDateTime-->
+								<!--onSelectTime-->
+								onSelectTime:function(dp,$input){
+								jeedom.cmd.execute({id: '#away_id#', value: {'awayact': 'true','dendaway': $input.val()}});  
+								
+								}
+							});
+						});
+				
+						                
+						</script>
+						
+					
+
+
+
+						
+                </div>
+                 <span class="#boileron_history# modetech tooltips" data-cmd_id='#boileron_id#' 
+		style="position : absolute;bottom: 20px; ;right: 60px;z-index: 350;font-size : 0.9em;" title="Boiler On Values">Boiler: |#boileron#     |</span>
+		
+		<span class="#boileroff_history# modetech tooltips" data-cmd_id='#boileroff_id#' 
+		style="position : absolute;bottom: 20px; ;right: 25px;z-index: 350;font-size : 0.9em;" title="Boiler OFF Values"> #boileroff# |</span>
+		
+		
+            </div> <!-- fin div class="row" --> 
+            
+            
+       </div>
+        
+        <!--  techno-fleches fa-info-circle fa-chevron-up  -->
+<table style="width: 100%;height: 20px;margin-left: 0px; position : absolute;bottom: 1px; border:#border#;border-radius:#border-radius#;
+		background-color: #background-color#;color: #color#;#style#" cellspacing="0" cellpadding="0" border="0">
+      <tbody>
+        <tr>
+          <td style="text-align: left; ">
+			  
+			  
+			 <script>
+				 //////////ECS Boost OFF	
+						
+			if ( '#ecsBoostState#'=='FALSE'){
+						$('.eqLogic[data-eqLogic_uid=#uid#] .hwboost').css;('color', '');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .hwstate').append('Ecs Boost Off ');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .hwstate').append('   <span class=" ecstemepicker cursor tooltips" title="modifier la T°" style="font-size: 1em;margin-left: 0px">T: #ecstemp# °C  </span> ');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .hwstate').css('display', 'block');
+					} else if ( '#ecsBoostState#'=='TRUE') {
+						$('.eqLogic[data-eqLogic_uid=#uid#] .hwboost').css('color', 'white');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .hwstate').append('<i class="fas fa-times-circle-o hwoff cursor tooltips" title="Eteindre ECS" style="font-size: 1em;margin-left: 0px;color:red"></i>');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .hwstate').append('   EcsBoost  ');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .hwstate').append('   <span class=" ecstemepicker cursor tooltips" title="modifier la T°" style="font-size: 1em;margin-left: 0px">T: #ecstemp# °C  </span> ');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .hwstate').append('   <span class="fas fa-arrow-right" style="font-size: 0.8em" title=""></span>   ');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .hwstate').append('  <span class=" ecspicker cursor tooltips" title="modifier l\'heure..." style="font-size: 1em;margin-left: 0px"> #ecsBoostEndtime#</span> ');
+						$('.eqLogic[data-eqLogic_uid=#uid#] .hwstate').css('display', 'block');
+					} 
+					$('.eqLogic[data-eqLogic_uid=#uid#] .ecstemepicker').on('click', function () {
+							$('.eqLogic[data-eqLogic_uid=#uid#] .ecsslidz').toggle();
+							$('.eqLogic[data-eqLogic_uid=#uid#] .infoz').toggle();
+						});
+					//////////////////////////
+					$(function () {
+							$('.eqLogic[data-eqLogic_uid=#uid#] .hwoff').on('click',
+									function(){
+										jeedom.cmd.execute({id: '#hwboost_id#', value: {'acthwb': 'false'}});
+									}
+						)});
+					
+					
+					////////////OK//setEcsEndtime
+					$.include(['plugins/migoControl/core/template/dashboard/mdatetimepicker.js'], 
+                        $(function (e) {
+							$('.eqLogic[data-eqLogic_uid=#uid#] .ecspicker').datetimepicker({
+								datepicker: false,
+								step: 15,
+								//format:	'd/m/Y H:i',
+								formatTime:'H:i',
+								theme:'dark',
+								minTime: '0',
+								onSelectTime:function(dp,$input){
+									jeedom.cmd.execute({id: '#hwboost_id#', value: {'acthwb': 'true','dendecs': $input.val()}});  
+									}
+							});
+						})                            
+                     );
+						////////////////////
+						
+						
+						
+			</script>
+			
+			  <span class="hwstate tooltips"  style="cursor:default; font-size: 0.9em; margin-left: 5px;"  title="Eau chaude"><!-- margin-left: 5px;  -->
+               </span>
+               
+			</td>  
+          <td style="width: 80px;text-align: right;">
+          
+<!--*******************************  -->
+
+	
+				  
+<span class="sysmodes cursor tooltips"  style="font-size : 0.9em;"  ><!-- #background-color# -->
+</span>
+
+		<script>
+		$('.eqLogic[data-eqLogic_uid=#uid#] .sysmodes').on('click', function () {
+			$('.eqLogic[data-eqLogic_uid=#uid#] .modeplan').toggle();
+			setTimeout(function () {
+				
+				}, 4000);
+							$('.eqLogic[data-eqLogic_uid=#uid#] .modetemp').toggle();
+						});
+       </script>
+
+
+				
+<!--*******************************  --> 
+
+</div><!--divhtm***************************  -->
+
+
+</div>					
+						
+						
+				
+						
+			  
+			  
+			  
+			  
+			  
+			  
+			  
+			 
+			 			  
+		<!--position : absolute;bottom: 2px; right: 25px;z-index: 350; -->
+			  </td>
+          <td style="width: 22px; text-align: right;">
+			  <i class="fas fa-info-circle cursor tooltips infcmd noRefresh" title='Autres infos' style=" right: 3px; font-size: 0.9em;"></i>
+			  </td>
+          <td style="width: 22px; text-align: right;">
+			  <!-- Changer commandes afficher timpicker -->
+		<i class="fas fa-retweet cursor tooltips changecmd noRefresh" title='Changer commandes' style=" right: 3px;"></i>
+		<script>
+		$('.eqLogic[data-eqLogic_uid=#uid#] .changecmd').on('click', function () {
+							$('.eqLogic[data-eqLogic_uid=#uid#] .modeplan').toggle();
+							$('.eqLogic[data-eqLogic_uid=#uid#] .modetemp').toggle();
+						});
+       </script>
+			  </td>
+        </tr>
+      </tbody>
+</table>
+
+
+<div class="infhtm" style="display : none; background-color: #background-color#;"> 
+	
+	
+	<!--<span class="humidity" data-cmd_id="36">#cmd_36#</span>--> 
+	 
+	 	 
+	 <span class="eqLogicAttr label label-default" style="font-size : 0.8em; display : block">lastCommTherm: #lastCommTherm#</span>
+	
+	
+ <br>
+ <!--
+	   <span class="eqLogicAttr label label-default" data-l1key="status" data-l2key="lastCommunication" 
+	   style="font-size : 0.8em;cursor : default;">collectDate: #temperature_collectDate#</span>
+ <br>
+	<span class="eqLogicAttr label label-default" data-l1key="status" data-l2key="lastCommunication" 
+	   style="font-size : 0.8em;cursor : default">updatetime: #temperature_updatetime#</span>
+	   --> 
+	    <span class="lastCommTherm eqLogicAttr label label-default" data-l1key="status" data-l2key="lastCommTherm" 
+	   style="font-size : 0.8em;cursor : default; display : ">lastCommTherm: #lastCommTherm#</span>
+	   <br>
+	   <span class="lastCom label label-default" data-l1key="status" data-l2key="lastCommunication" 
+	   style="font-size : 0.8em;cursor : default; display : block">lastCom: #lastCom#</span>
+	 
+	  
+	  <br>
+	  <span class="cronc cursor tooltips" data-cmd_id="#config#" 
+		style="font-size : 0.8em; font-weight: bold" title="UpFailed #temperature_collectDate#"</span>UpFailed: #UpNumberFailed#
+				
+
+
+<script>
+	
+	
+	$(function () {
+								$('.eqLogic[data-eqLogic_uid=#uid#] .cronc').on('click',
+									function(){
+										jeedom.cmd.execute({id: '#cronc_id#'});
+                       // jeedom.cmd.execute({id: '#away_id#', value: {'awayact': 'true'}});
+                        //jeedom.cmd.cron5();
+                     // migoControl::cron5();
+                        //ajax::success();
+                        
+									}
+						)});
+						
+						
+						
+						
+                   
+			</script>
+				
+	           
+</div>
+
+
+
+
+
+ <script>
+	  date = new Date;
+	  d = new Date(timestamp * 1000); 
+        annee = date.getFullYear();
+       	moi = date.getMonth();
+        mois = new Array('Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre');
+      	jourdumois = date.getDate();
+      	jour = date.getDay();
+      	jours = new Array('Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi');
+     	newDate=jours[jour]+' '+jourdumois+' '+mois[moi]+' '+annee;
+     	//$('.eqLogic[data-eqLogic_uid=#uid#] .labeld').append(jours[jour]+' '+jourdumois+' '+mois[moi]+' '+annee);
+      	h = date.getHours();
+        if(h<10)
+        {
+                h = "0"+h;
+        }
+        m = date.getMinutes();
+        if(m<10)
+        {
+                m = "0"+m;
+        }
+        newHeure = h+':'+m;
+      	//$('.eqLogic[data-eqLogic_uid=#uid#] .labeld').append(h+':'+m);
+      	
+      	
+      	
+      	
+      	
+		  //$('.eqLogic[data-eqLogic_uid=#uid#] .labeld').append(newChaine + ' sgdsg');
+	 //$('.cmd[data-cmd_id=36]').attr('title','Valeur du '+_options.valueDate+', collectée le '+_options.collectDate)
+	// $('.eqLogic[data-eqLogic_uid=#uid#] .humidity').append('#36#').html();
+	 //$('#36#').html();
+	  if(3 == 3){
+		  //newChaine = jeedom.getCmd('#36#');//$('.cmd[data-cmd_id=#36#]');//'#36#'; // espacement
+		   //newChaine ='';//value('.cmd[data-cmd_id=36]') ;
+		  //value(init(data.cmd.display.graphDerive))
+		  b = 0; // reset
+		  }
+		  
+	// $('#index_id#').html(newChaine + ' sgdsg');	
+	//#36#
+	//$('.eqLogic[data-eqLogic_uid=#uid#] .labeld').append(newDate + ' ' + newHeure);
+	
+	SimpleDateFormat format = new SimpleDateFormat("yyyy MMM dd hh:mm:ss");
+	Date dated = format.parse(format.format(new Date()));
+	Date date = new Date();
+	
+	String str = new SimpleDateFormat("yyyy MMM dd hh:mm:ss").format(date);
+	$('.eqLogic[data-eqLogic_uid=#uid#] .labeld').append(d+date);
+              </script>
+
+	
+	
+
+
+<script>
+//**************************************//
+
+if ('#UpNumberFailed#' >= 3) {
+	
+	$('.eqLogic[data-eqLogic_uid=#uid#] .infcmd').css('color', 'red');
+	$('.eqLogic[data-eqLogic_uid=#uid#] .cronc').css('color', 'red');					
+} 
+//**************************************//	
+$(document).ready(function(){	
+$('.eqLogic[data-eqLogic_uid=#uid#] .infcmd').on('click', function () {
+
+	$('.eqLogic[data-eqLogic_uid=#uid#] .infcmd').popover({
+		//container: 'body',
+		//trigger: 'focus ',
+		title: false,
+		placement: "top",
+		html : true,
+		content: function () {return $('.eqLogic[data-eqLogic_uid=#uid#] .infhtm').html(); } ,
+		})
+		.on("show.bs.popover", function () { 
+			$(this).data("bs.popover").tip()
+			.css({
+				width: "308px",
+				//height: "24px",
+				padding: "0px",
+				'background-color': "#474646",//'background-color',
+				'background': "#474646",
+				}); 
+		});
+    $('.eqLogic[data-eqLogic_uid=#uid#] .infcmd').popover('show'); 
+    
+    
+    
+    
+    setTimeout(function () {
+         $('.eqLogic[data-eqLogic_uid=#uid#] .infcmd').popover('hide');
+    }, 8000);
+    });
+});
+//**************************************//
+</script>
+
+
+
+    
+</div></div>

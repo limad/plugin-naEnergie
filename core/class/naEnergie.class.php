@@ -104,7 +104,7 @@ class naEnergie extends eqLogic {
 		}
 		catch(Netatmo\Exceptions\NAClientException $ex)
 		{
-			log::add('naEnergie', 'error', "Erreur lors de la r\écup\ération du tokens: " .$ex->getMessage()."\n");
+			log::add('naEnergie', 'error', "Erreur lors de la r\écup\ération du tokens: " .$ex->getMessage()."");
 		}	
 		
 			//Homedata
@@ -117,8 +117,6 @@ class naEnergie extends eqLogic {
 			log::add('naEnergie', 'debug', 'tokens: '.$tokens['access_token']);
 			log::add('naEnergie', 'debug', 'homeData: '.json_encode(naEnergie::$_data));
 			
-			//log::add('naEnergie', 'debug', 'scope: '.'|'.$_nascope.'|');
-			//log::add('naEnergie', 'debug', 'data: '.json_encode(naEnergie::$_data, true));
 		}
 		
 		
@@ -128,7 +126,6 @@ class naEnergie extends eqLogic {
 	
 	/***** setroomthermmode: Set the home heating system to use schedule/ away/ frost guard mode****/
 	public function changeHomeTherm($multiId,$action,$endtime = NULL) {
-		
 		$ids = explode('|', $multiId);
 		$homeid= $ids[1];
 		
@@ -140,10 +137,18 @@ class naEnergie extends eqLogic {
 				$apicmd=$client->_setThermMode($homeid, $action);
 				break;
           	case 'away':
+            	$confLength=$this->getConfiguration('away_duaration',null);
+            	if(!$endtime && $confLength){
+                  	$endtime = time() + ($confLength* 60);
+                }
 				$apicmd=$client->_setThermMode($homeid, $action, $endtime);
 				break;
 			case 'hg':
-				$apicmd=$client->_setThermMode($homeid, 'hg', $endtime);
+            	$confLength=$this->getConfiguration('hg_duaration',null);
+            	if(!$endtime && $confLength){
+                  	$endtime = time() + ($confLength* 60);
+                }
+            	$apicmd=$client->_setThermMode($homeid, 'hg', $endtime);
 				break;
 		}
 		sleep(3);
@@ -164,7 +169,7 @@ class naEnergie extends eqLogic {
 		$homeid= $ids[1];
 		log::add('naEnergie', 'debug', ''.__FUNCTION__ .' action: '.$action.'|'.$setpoint.'|'.$endtime.'| sur homeid: '.$homeid);	
 		if ($endtime==null) {
-			$length = $this->getConfiguration('spmDuration');
+			$length = $this->getConfiguration('spm_duaration');
 			if ($length == null || $length == '') {
 				$length = 60;
 			}
@@ -220,7 +225,7 @@ class naEnergie extends eqLogic {
 		$homeid= $ids[1];
 		log::add('naEnergie', 'debug', ''.__FUNCTION__ .' action: '.$action.'|'.$setpoint.'|'.$endtime.'| sur homeid: '.$homeid);	
 		if ($endtime==null) {
-			$length = $this->getConfiguration('spmDuration');
+			$length = $this->getConfiguration('spm_duaration');
 			if ($length == null || $length == '') {
 				$length = 60;
 			}
@@ -308,23 +313,57 @@ class naEnergie extends eqLogic {
 		} else{
 			log::add('naEnergie', 'debug', ''.__FUNCTION__ .' Planning set to: '.$scheduleid.' '.json_encode($apicmd['status']));
 		
-			naEnergie::getDataRoom($multiId, null, $scheduleid);
+			naEnergie::getDataRoom($multiId);
 		}
     }
 
 ////////////////////////////////	
-	public function infoStation() {
+	public function infoStation($update=false) {
 		
 		log::add('naEnergie', 'debug', '******** Starting '.__FUNCTION__ .'********');
 		$client = self::getClient();
 		$data = naEnergie::$_data;
 		foreach($data['homes'] as $home) {//array multi scope
-				$homeid=$home['id'];
-				$homeName=$home['name'];
-				$eqlist=[];
-          		log::add('naEnergie', 'debug', '  ******'.__FUNCTION__ .' homeid: '.$homeName.'('.$homeid.') ******');
-				naEnergie::$_homeIds[]=$home; 
-				//log::add('naEnergie', 'debug', ''.__FUNCTION__ .'homeIds '.json_encode(naEnergie::$_homeIds));	
+			$homeid=$home['id'];
+			$homeName=$home['name'];
+			$eqlist=[];
+          	log::add('naEnergie', 'debug', '  ******'.__FUNCTION__ .' homeid: '.$homeName.'('.$homeid.') ******');
+			naEnergie::$_homeIds[]=$home; 
+			
+          	foreach($home['modules'] as $module) {//foreach3
+				$type=null;
+                //if (in_array($module['id'], $room['module_ids'] )){
+                if($module['type'] === "NAPlug"){
+                    $plug_id=$module['id'];
+                    $plug_name=$module['name'];
+                    $plug_modules=$module['modules_bridged'];
+                    break;
+                }
+            }
+          	$eqHome = eqLogic::byLogicalId($homeid, 'naEnergie');
+			if (!is_object($eqHome) || $eqHome->getLogicalId() != $homeid ) {// 
+						$eqHome = new naEnergie();
+						$eqHome->setIsEnable(1);
+						$eqHome->setIsVisible(1);
+						
+						$eqHome->setEqType_name('naEnergie');
+						$eqHome->setName($homeName.'-'.$plug_name);
+						$eqHome->setLogicalId($homeid);
+						$eqHome->setConfiguration('HomeId', $home['id']);
+              			$eqHome->setConfiguration('plug_id', $plug_id);
+              			$eqHome->setConfiguration('modules_bridged', $plug_modules);
+						$eqHome->setCategory('heating', 1);
+						$eqHome->setConfiguration('UpNumberFailed', 0);
+                      	$eqHome->setConfiguration('type', 'home');//$eqHome->setConfiguration('roomName', $roomName);
+                      	$eqHome->setConfiguration('parentName', $homeName);
+						$eqHome->setConfiguration('roomType', 'Home');
+						//$eqHome->setConfiguration('modules', $modules);
+                      	$eqHome->setConfiguration('eqtuile', 'default');
+						$eqHome->setConfiguration('spm_duaration',$home['therm_setpoint_default_duration']);
+                  		$eqHome->save();
+                }
+                  
+                  //log::add('naEnergie', 'debug', ''.__FUNCTION__ .'homeIds '.json_encode(naEnergie::$_homeIds));	
 			
 			foreach($home['rooms'] as $room){//foreach3
 					$roomId=$room['id'];
@@ -340,11 +379,11 @@ class naEnergie extends eqLogic {
 						$eqLogic = eqLogic::byLogicalId($eqLog_id, 'naEnergie');
 					}
 					
-					if (!is_object($eqLogic) || $eqLogic->getLogicalId() != $eqLog_id) {// 
+					if (!is_object($eqLogic)) {//$update=true 
 						$eqLogic = new naEnergie();
 						$eqLogic->setIsEnable(0);
 						$eqLogic->setIsVisible(1);
-						
+						//if ($update=true) {//$update=true 
 						$eqLogic->setEqType_name('naEnergie');
 						$eqLogic->setName($room['name']);
 						$eqLogic->setLogicalId($eqLog_id);
@@ -355,7 +394,8 @@ class naEnergie extends eqLogic {
                       	$eqLogic->setConfiguration('parentName', $homeName);
 						$eqLogic->setConfiguration('roomType', self::getRoomType($room['type']));
 						$eqLogic->setConfiguration('modules', $modules);
-						
+                      	$eqLogic->setConfiguration('eqtuile', 'default');
+						$eqLogic->setConfiguration('spm_duaration',$home['therm_setpoint_default_duration']);
 						foreach($home['modules'] as $module) {//foreach3
 							$type=null;
                             //if (in_array($module['id'], $room['module_ids'] )){
@@ -378,6 +418,7 @@ class naEnergie extends eqLogic {
 								if(count($room['module_ids']) > 1){
                                   	$eqLogic->setConfiguration('isMulti', true);
                                 }else{
+                                  	$eqLogic->setConfiguration('isMulti', false);
                                   	$battery= ($type=='NATherm1' ? '3x1.5V AAA/LR03' : '2x1.5V two AA/LR06');
                                   	$eqLogic->setConfiguration('battery_type', $battery);
                                 }
@@ -411,14 +452,9 @@ class naEnergie extends eqLogic {
 		//fin foreach($data['homes'] as $home)
 		self::getDataRoom();
 	}
-
 ///////////////////////////////////////
-	public static function getDataRoom($multiId = null,$forcedSetpoint = null, $scheduleid=null){
+	public static function getDataRoom($multiId = null, $cronPhase=null){
 		$client=naEnergie::getClient(__FUNCTION__);
-		//$client = self::getClient(__FUNCTION__);
-		//$datas = naEnergie::$_data;
-		//**GET/homesdata,homestatus,roommeasure
-		
 		
 		if($multiId !== null){
 			$eqLogics[] = eqLogic::byLogicalId($multiId, 'naEnergie');
@@ -432,8 +468,8 @@ class naEnergie extends eqLogic {
 		$apiHome=array();
 		$eqCount=0;
 		foreach($eqLogics as $eqLogic) {
-			if (!$eqLogic->getIsEnable()) {
-              	log::add('naEnergie','debug', '	'.__FUNCTION__ . '****  break '.$eqLogic->getIsEnable());
+			if (!$eqLogic->getIsEnable() || $eqLogic->getConfiguration('type')=='home') {
+              	//log::add('naEnergie','debug', '	'.__FUNCTION__ . '****  break '.$eqLogic->getIsEnable());
               	continue;
             }
 			log::add('naEnergie','debug','***********************  eqlogiq '.$eqCount.' '.$eqLogic->getName().' ***********************');
@@ -441,7 +477,7 @@ class naEnergie extends eqLogic {
 			$eqLog_id=$eqLogic->getLogicalId();
 			list($roomid, $homeid) = explode('|', $eqLog_id);
 				  
-			$eqModules=$eqLogic->getConfiguration('modules');
+			$confModules=$eqLogic->getConfiguration('modules');
 					
 			$changed = false;
 			
@@ -452,102 +488,62 @@ class naEnergie extends eqLogic {
 				log::add('naEnergie', 'debug', ''.__FUNCTION__ .' rqst apiHome '.$eqCount.': '.json_encode($apiHome));
 			}
 			$global[$homeid][$eqLog_id]=[];
-          	/*foreach($apiHome as $keyHomeId=>$dataHid) {//$keyHomeId
-				$changedHid=false;
-				if($keyHomeId != $homeid){//homeid has changed
-					$apiHome[$homeid]['Data']=$client->_getHomesdata($homeid)['homes'][0];//attention 0
-					$apiHome[$homeid]['Status']=$client->_getHomestatus($homeid)['home'];
-					log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' rqst Next apiHome '.$eqCount.': '.json_encode($apiHome));
-					$changedHid=true;
-				}					
-			}*/
-          	//fin foreach($apiHome as $keyHomeId=>$dataHid)
-			//$global[$homeid][$eqLog_id]['home_name']=$apiHome[$homeid]['Data']['name'];
-			$global[$homeid]['home_name']=$apiHome[$homeid]['Data']['name'];
-            //$global[$homeid][$eqLog_id]['home_id']=$apiHome[$homeid]['Data']['id'];
+          	$global[$homeid]['home_name']=$apiHome[$homeid]['Data']['name'];
+            $global[$homeid]['spm_duaration']=$sp_duration=$apiHome[$homeid]['Data']['therm_setpoint_default_duration'];
+				//log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' sp_duration: '.$sp_duration);
+          	$global[$homeid]['home_modetech']=$home_modetech=$apiHome[$homeid]['Data']['therm_mode'];
+				log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' home_modetech: '.$home_modetech);
           	
           
           	$datamodules=$apiHome[$homeid]['Data']['modules'];
 			foreach ($datamodules as $keydm=>$datamodule) {
 				$data_moduleid=$datamodule['id'];
-              	if (in_array($data_moduleid, $eqModules  )){
-					$modulename=$global[$homeid][$eqLog_id]['modules'][$data_moduleid]['name']=$datamodule['name'];
-					$global[$homeid][$eqLog_id]['modules'][$data_moduleid]['room_id']=$datamodules[$keydm]['room_id'];
-					log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' global module name: '.$datamodules[$keydm]['name']);
-				}
+              	if (in_array($data_moduleid, $confModules )){
+					$globalmodules[$eqLog_id][$keydm]=$datamodule;
+                  
+                  	//$key = array_search($data_moduleid, $apiHome[$homeid]['Status']['modules']); 
+                 	$key_search = array_search($data_moduleid, array_column($apiHome[$homeid]['Status']['modules'], 'id'));
+                  	//log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' global module name: '.$datamodules[$keydm]['name']);
+				  	//log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' key: '.$key.' name: '.$apiHome[$homeid]['Status']['modules'][$key_search]['type']);
+					$global[$homeid][$eqLog_id]['modules'][]=
+                  	array_merge($datamodule, $apiHome[$homeid]['Status']['modules'][$key_search] );
+                
+                	
+                }
 			}
-          //$global[$homeid][$eqLog_id][$eqModules]->$global[$homeid][$eqLog_id]['modules'][$eqModules]
-			//fin foreach ($datamodules as $keydm=>$datamodule
+          //fin foreach ($datamodules as $keydm=>$datamodule
           
           	////			
-			$statusmodules=$apiHome[$homeid]['Status']['modules'];
+			//$statusmodules=$apiHome[$homeid]['Status']['modules'];
+          	$statusmodules=$global[$homeid][$eqLog_id]['modules'];
 			foreach ($statusmodules as $keyhm=>$statmodule) {
 				$stat_moduleid=$statmodule['id'];
-				if (!isset($global[$homeid]['wifi_strength']) &&  $statmodule['type']=='NAPlug'){
+              	if (!isset($global[$homeid]['wifi_strength']) &&  $statmodule['type']=='NAPlug'){
                 	$wifi_strength=$global[$homeid]['wifi_strength'] = $statmodule['wifi_strength'] ;
                   	log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' wifi_strength: '.$global[$homeid]['wifi_strength']);
                 }
-              	//if (in_array($eqModules, $statmodule)){
-                if (in_array($stat_moduleid, $eqModules)){ 
-					log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' eqModuleId found !: '.$keyhm.' | '.$stat_moduleid);
-						//$global[$homeid][$eqLog_id][$stat_moduleid]->$global[$homeid][$eqLog_id]['modules'][$stat_moduleid]	
-					$global[$homeid][$eqLog_id]['modules'][$stat_moduleid]['id']=$statmodule['id'];//$statmodule[
-					$global[$homeid][$eqLog_id]['modules'][$stat_moduleid]['type']=$statmodule['type'];
-					$global[$homeid][$eqLog_id]['modules'][$stat_moduleid]['rfstatus']=$statmodule['rf_strength'];
+              	
+                if (in_array($stat_moduleid, $confModules)){ 
+					//log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' eqModuleId found !: '.$keyhm.' | '.$stat_moduleid);
 					
-                  	$room_rfstatus=[];
-					$room_battery_state=[];
-                    $room_battery_level=[];
-					//log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' Module found ! '.$statmodule['id'].' | '.$statmodule['type']);
-					if(isset($statmodule['reachable'])){
-                      	$global[$homeid][$eqLog_id]['modules'][$stat_moduleid]['reachable']=$statmodule['reachable'];
-                    }
-					//$global[$homeid][$eqLog_id]
-					$global[$homeid][$eqLog_id]['modules'][$stat_moduleid]['battery_state']=$battery_state=$statmodule['battery_state'];
-						$room_battery_state[] = $statmodule['battery_state'];
-                    
-                    $global[$homeid][$eqLog_id]['modules'][$stat_moduleid]['battery_level']=$battery_level=$statmodule['battery_level'];
-						$room_battery_level[] = $statmodule['battery_level'];
-                  	
-                    
-                  	if(isset($statmodule['rf_strength'])){
-						$global[$homeid][$eqLog_id]['modules'][$stat_moduleid]['rfstatus']=$statmodule['rf_strength'];
-                      	$room_rfstatus[] = $statmodule['rf_strength'];
-					}
-					if( isset($global[$homeid]['wifi_strength']) ){
-						//$wifi_strength=$global[$homeid][$eqLog_id]['wifi_strength']=$global[$homeid]['wifi_strength'];
-                    }
-                  
-					if(isset($statmodule['bridge'])){
-						$global[$homeid][$eqLog_id]['modules'][$stat_moduleid]['bridge']=$statmodule['bridge'];
-					}
-                  	
                   
                   	if(!isset($global[$homeid]['boiler_status']) ){//&& isset($statmodule['boiler_status'])//$statmodule['type']='NATherm1'
                          if( isset($statmodule['boiler_status']) ){
                             $global[$homeid]['boiler_status']=$boiler_status=($statmodule['boiler_status'] != false) ? 1: 0;
                          }
                     }
-                      /*else{
-                            $boiler_status=$global[$homeid]['boiler_status'];
-                        }*/
-                  	//log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' boiler_status: '.$boiler_status);
-                   
+                    
                   	if(!isset($global[$homeid]['boiler_anticipating']) ){//&& isset($statmodule['anticipating'])$statmodule['type']='NATherm1'
 						if( isset($statmodule['anticipating']) ){
                         	$global[$homeid]['boiler_anticipating']=$boiler_anticipating = ($statmodule['anticipating'] != false) ? 1: 0;
                         }
                     }else{
                      	$boiler_anticipating = $global[$homeid]['boiler_anticipating'];
-                    }
-                  	//log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' boiler_anticipating from: '.$statmodule['type'].$boiler_anticipating); 
+                    } 
                   
                   	if(!isset($global[$homeid]['therm_comfortboost']) && isset($statmodule['anticipating'])){//$statmodule['type']='NATherm1'
 						$global[$homeid]['therm_comfortboost']=$therm_comfortboost = ($statmodule['boiler_valve_comfort_boost'] != false) ? 1: 0;
-					}else{
-                     	//$boiler_anticipating=$global[$homeid]['therm_comfortboost'];
-                     // $global[$homeid]['therm_comfortboost']=$therm_comfortboost = ($statmodule['boiler_valve_comfort_boost'] != false) ? 1: 0;
-                    }
+					}
                   
                   	
 					
@@ -555,19 +551,9 @@ class naEnergie extends eqLogic {
 				}
 			}
           	//fin foreach ($statusmodules as $keyhm=>$module
-          	
-          
-          	
-          	$global[$homeid]['sp_duration']=$sp_duration=$apiHome[$homeid]['Data']['therm_setpoint_default_duration'];
-			$global[$homeid]['home_modetech']=$home_modetech=$apiHome[$homeid]['Data']['therm_mode'];
-			log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' sp_duration: '.$sp_duration);
-			log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' home_modetech: '.$home_modetech);
-					
-			$getplanning = $eqLogic->getCalendar($apiHome[$homeid]['Data']['therm_schedules'], $roomid);
-          	
-			log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' getplanning: '.json_encode($getplanning));  
-			//planing=plan2
-			//log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' profil_endtime0: '.$profil_endtime.'='.date('d M Y H:i:s', $profil_endtime));
+          	$getplanning = $eqLogic->getCalendar($apiHome[$homeid]['Data']['therm_schedules'], $roomid);
+          	log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' getplanning: '.json_encode($getplanning));  
+			
           
           	if(!isset($global[$homeid]['listplanning'])  || $global[$homeid]['listplanning']==null){
 				$global[$homeid]['listplanning'] = $listplanning = $getplanning['planings']['listplanning'];
@@ -600,9 +586,9 @@ class naEnergie extends eqLogic {
 					
                   
                   	if (isset($roomStatus['therm_measured_temperature']) && $roomStatus['therm_measured_temperature']) {
-						$global[$homeid][$eqLog_id]['temperature'] = $temperature_ambient = $roomStatus['therm_measured_temperature'];
+						$global[$homeid][$eqLog_id]['temperature'] = $temperature = $roomStatus['therm_measured_temperature'];
 					} else{
-						$global[$homeid][$eqLog_id]['temperature'] = $temperature_ambient = $roomStatus['therm_measured_temperature']=99;
+						$global[$homeid][$eqLog_id]['temperature'] = $temperature = $roomStatus['therm_measured_temperature']=99;
 					}
                   
 					if (isset($roomStatus['therm_setpoint_temperature']) && $roomStatus['therm_setpoint_temperature']) {
@@ -611,51 +597,54 @@ class naEnergie extends eqLogic {
 						$global[$homeid][$eqLog_id]['consigne'] = $consigne = $roomStatus['therm_setpoint_temperature']=99;
 					}
                   
-                  	if($consigne > $temperature_ambient){
+                  	if($consigne > $temperature){
                     	$heatstatus = $global[$homeid][$eqLog_id]['requestOn'] = 1;
+                      	$global[$homeid]['rooms_requestOn'][$roomid] = true;
                     }else{
                     	$heatstatus = $global[$homeid][$eqLog_id]['requestOn'] = 0;
                     }
                   	
 					if (isset($roomStatus['open_window']) && $roomStatus['open_window'] != 0) {
 						$global[$homeid][$eqLog_id]['open_window'] = $open_window = 1;
+                      	$global[$homeid]['rooms_open_window'][$roomid] = true;
 					} else{
 						$global[$homeid][$eqLog_id]['open_window'] = $open_window = 0;
 					}
 					//$room_reachable = $roomStatus['reachable'];
 					if(isset($roomStatus['reachable']) && $roomStatus['reachable'] != true){
 						$eqLogic->setStatus('reachable_Nok', $eqLogic->getStatus('reachable_Nok', 0) + 1);
-                      	//$eqLogic->setConfiguration('Joignable', $roomStatus['reachable']);
+                      	$global[$homeid][$eqLog_id]['reachable'] = 1;
 						if($eqLogic->getStatus('reachable_Nok', 0)===1){
-							$eqLogic->setStatus('reachable_NokTime', date('Y-m-d H:i:s', $thermostat['last_plug_seen']));
+							$eqLogic->setStatus('reachable_NokTime', date('d-m-Y H:i:s'));
 						}
 						//$eqLogic->save();
 					}else{
 						if($eqLogic->getStatus('reachable_Nok', 0) != 0){
 							$eqLogic->setStatus('reachable_Nok', 0);
 							$eqLogic->setStatus('reachable_NokTime', '');
-							//$eqLogic->save();
+                          	$global[$homeid][$eqLog_id]['reachable'] = 0;
 						}
 					}
                   
-                  
-                  
-						  
-					if (isset($roomStatus['anticipating'])) {
-						$global[$homeid][$eqLog_id]['anticipating'] = $room_anticipating=($roomStatus['anticipating'] != false)? 1: 0;
+                  	if (isset($roomStatus['anticipating']) && $roomStatus['anticipating'] != false) {
+						$global[$homeid][$eqLog_id]['anticipating'] = $room_anticipating = 1;
+                      	$global[$homeid]['rooms_anticipating'][$roomid] = true;
                     } else{
 						$global[$homeid][$eqLog_id]['anticipating'] = $room_anticipating=0;
+                      	
 					}
-					log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' room_anticipating: '.$room_anticipating);
+					//log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' room_anticipating: '.$room_anticipating);
 						
 					//$fenetreOuverte=$roomStatus['open_window'];
 						  
 					if (isset($roomStatus['heating_power_request']) && $roomStatus['heating_power_request'] != 0) {
 						$global[$homeid][$eqLog_id]['powerRequest'] = $powerRequest=1;
+                      	$global[$homeid]['rooms_powerRequest'][$roomid] = $roomStatus['heating_power_request'];
 					} else{
 						$global[$homeid][$eqLog_id]['powerRequest'] = $powerRequest=0;
+                      	
 					}
-					log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' ********* powerRequest: '.$powerRequest );  
+					//log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' ********* powerRequest: '.$powerRequest );  
 						
 					//$global[$homeid][$eqLog_id]['modetech'] = $modetech = $roomStatus['therm_setpoint_mode'];
 					//$global[$homeid][$eqLog_id]['room_modetech'] = $room_modetech = ucfirst($modetech);
@@ -667,7 +656,7 @@ class naEnergie extends eqLogic {
                   	}else{
                     	$global[$homeid][$eqLog_id]['setpointmode_starttime'] = $setpointmode_starttime=null;
                     }
-                  	log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' ********* setpointmode_starttime: '.$setpointmode_starttime);	
+                  	//log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' ********* setpointmode_starttime: '.$setpointmode_starttime);	
                   	
                   	if ($roomStatus['therm_setpoint_end_time'] != 0){
                     	$global[$homeid][$eqLog_id]['setpointmode_endtime'] = $setpointmode_endtime=date('d-m-Y H:i',$roomStatus['therm_setpoint_end_time']);
@@ -680,7 +669,7 @@ class naEnergie extends eqLogic {
                         }
                       	$global[$homeid][$eqLog_id]['setpointmode_endtime'] = $setpointmode_endtime=$value;
                     }
-                  	log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' ********* setpointmode_endtime: '.$setpointmode_endtime);	
+                  	//log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' ********* setpointmode_endtime: '.$setpointmode_endtime);	
 					if ($home_modetech == 'away') {
                         $statusname= 'Jusqu\'à ' . $setpointmode_endtime;
                     } else if ($home_modetech == 'hg') {
@@ -698,7 +687,7 @@ class naEnergie extends eqLogic {
                   //$eqLogic->setConfiguration('Joignable', $roomStatus['reachable']);
 					$eqLogic->setConfiguration('Temperature', $roomStatus['therm_measured_temperature']);
 					$eqLogic->setConfiguration('Consigne', $roomStatus['therm_setpoint_temperature']);
-					$eqLogic->setConfiguration('spmDuration',$sp_duration);
+					$eqLogic->setConfiguration('spm_duaration',$sp_duration);
 					//$sp_duration
 					//$eqLogic->setConfiguration('Mode', $roomStatus['therm_setpoint_mode']);
 					//$eqLogic->setConfiguration('DebutMode', $roomStatus['therm_setpoint_start_time']);
@@ -718,26 +707,35 @@ class naEnergie extends eqLogic {
           
           /////////FIN EXTRACTION /////////////////
        /////////Affectation des valeurs ///////////////// 
-          	$eqmodules=[];
-          	foreach ($global[$homeid][$eqLog_id]['modules'] as $roomModule) {
-              	$eqmodules[]=$roomModule;
-            } 
-          	$global[$homeid][$eqLog_id]['eqmodules']=json_encode($eqmodules, JSON_UNESCAPED_UNICODE);//$eqmodules;
-           // log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' eqmodules '.json_encode($eqmodules, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+           
+          	$eqmodules=$global[$homeid][$eqLog_id]['modules'];
+          // log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' eqmodules '.json_encode($eqmodules, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
           	//$eqLogic->batteryStatus(25);
 			if(count($eqmodules) > 1){
-				foreach ($eqmodules as $eqmodule) {
-              		$eqbatterie[]=self::batteryStrtoTaux($eqmodule['battery_state']);
-                  	$eqrfstatus[]=$eqmodule['rfstatus'];
+				foreach ($eqmodules as $key=>$eqmodule) {
+              		//$eqbatterie[]=self::batteryStrtoTaux($eqmodule['battery_state']);
+                  	$eqbatterie[]=self::getBattery($eqmodule['battery_level'],$eqmodule['type']);
+                  	$eqmodules[$key]['battery_percent']=self::getBattery($eqmodule['battery_level'],$eqmodule['type']);
+                  	
+                  	$eqrfstatus[]=$eqmodule['rf_strength'];
+                  	$eqrftextstatus[]=self::getrfstate($eqmodule['rf_strength']);
+                  	$eqmodules[$key]['rfpower']=self::getrfstate($eqmodule['rf_strength']);
+                  	
+                  //log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' rfpower '.$key.'--'. self::getrfstate($eqmodule['rf_strength']));
+                  //log::add('naEnergie', 'debug', '	'.__FUNCTION__ .' eqmodules '.$eqmodules[$key]['rfpower']);
             	} 
 				$batterie=min($eqbatterie);
-              	$rfstatus=min($eqrfstatus);
+              	$rfstatus=self::getrfstate(min($eqrfstatus));
             
             }else{
-				$batterie=self::batteryStrtoTaux($eqmodules[0]['battery_state']);
-              	$rfstatus=$eqmodules[0]['rfstatus'];
+				//$batterie=self::batteryStrtoTaux($eqmodules[0]['battery_state']);
+              	$batterie=self::getBattery($eqmodules[0]['battery_level'], $eqmodules[0]['type']);
+              	$rfstatus=self::getrfstate($eqmodules[0]['rf_strength']);//$eqmodules[0]['rfstatus'];
+              	$eqmodules[0]['rfpower']=$rfstatus;
+              	$eqmodules[0]['battery_percent']=$batterie;
             }
-          
+          	$global[$homeid][$eqLog_id]['eqmodules']=json_encode($eqmodules, JSON_UNESCAPED_UNICODE);//$eqmodules;
+           
           	$eqLogic->setConfiguration('batteryStatus', $batterie);
             $eqLogic->batteryStatus($batterie);
           	$eqLogic->setStatus('rfstatus', $rfstatus);
@@ -747,23 +745,16 @@ class naEnergie extends eqLogic {
           	$roomCmdi = array('consigne', 'temperature', 'room_modetech', 'eqmodules', 'listprofil', 'nowprofil', 'nextprofil', 
                               'nextprofil_delay', 'nextprofil_tendance', 'setpointmode_starttime', 'setpointmode_endtime', 
                               'room_anticipating', 'requestOn', 'batterie', 'rfstatus', 'open_window', 'powerRequest');
-          	//setpointmode_endtime
-        	//$eqLog_id=$eqLogic->getLogicalId();
-			//list($roomid, $homeid) = explode('|', $eqLog_id);
-				  
-			//$eqModules=$eqLogic->getConfiguration('modules');
+          	
           	foreach ($roomCmdi as $rcmdi) {
-              	
-				if (array_key_exists( $rcmdi, $global[$homeid][$eqLog_id])) {
-                  $cmd=$eqLogic->getCmd(null, $rcmdi);
-                  $value=$global[$homeid][$eqLog_id][$rcmdi];
-                  $eqLogic->checkAndUpdateCmd($cmd, $value);
-                  
-                  log::add('naEnergie','debug','    room-cmd('.$rcmdi.') set: to '. $value);
-                  
+              	if (array_key_exists( $rcmdi, $global[$homeid][$eqLog_id])) {
+                    $cmd=$eqLogic->getCmd(null, $rcmdi);
+                    $value=$global[$homeid][$eqLog_id][$rcmdi];
+                    $eqLogic->checkAndUpdateCmd($cmd, $value);
+					log::add('naEnergie','debug','    room-cmd('.$rcmdi.') set: to '. $value);
                 }elseif (in_array($stat_moduleid, $global[$homeid][$eqLog_id]['modules'] ) 
                          && array_key_exists( $rcmdi, $global[$homeid][$eqLog_id]['modules'][$stat_moduleid])){//
-                 log::add('naEnergie','debug','    global-eqModule-AR: '.json_encode( $global[$homeid][$eqLog_id]['modules'] ));
+                 	log::add('naEnergie','debug','    global-eqModule-AR: '.json_encode( $global[$homeid][$eqLog_id]['modules'] ));
                         	log::add('naEnergie','debug','    stat_moduleid '. $stat_moduleid);
                           	$value=$global[$homeid][$eqLog_id]['modules'][$stat_moduleid][$rcmdi];
                           	 log::add('naEnergie','debug','    room_module set: '.$rcmdi.' to '. $value);
@@ -773,14 +764,7 @@ class naEnergie extends eqLogic {
             }
         
         
-      	
-          
-          
-          
-          
-          
-			
-          	log::add('naEnergie','debug','		***********   fin eqlogiq '.($eqCount-1).' '.$eqLogic->getName().'  **********');
+      		log::add('naEnergie','debug','		***********   fin eqlogiq '.($eqCount-1).' '.$eqLogic->getName().'  **********');
         	log::add('naEnergie','debug',''.PHP_EOL.'*'); 
 			$eqCount++;
         }//fin foreach($eqLogics as $eqLogic
@@ -818,11 +802,10 @@ class naEnergie extends eqLogic {
       
       	//
 	}
-  
-  
+
 /////////////////////////set Manual mode	
 	public function getCalendar($proglist, $roomid) {
-      	log::add('naEnergie','debug', '		'.__FUNCTION__ .' start... ');
+      	//log::add('naEnergie','debug', '		'.__FUNCTION__ .' start... ');
 		$nowplanning='';
 		$nowplanid='';
 		$nowprofil ='Aucun';
@@ -937,37 +920,32 @@ class naEnergie extends eqLogic {
       
       
 	}
+  
 //////////////////////////////////////
-	public static function batteryStrtoTaux($battery) {
-		switch ($battery) {
-			case 'full':$value=100; break;//(nvr:>3469, NATherm1>4500)
-			case 'high':$value=75; break;//(nvr:>2840, NATherm1>3738)
-			case 'medium':$value=51; break;//(nvr:>2729, NATherm1:3483,3468)
-          	case 'low':$value=20; break;//(nvr:<2565, NATherm1:3020)
-			case 'very_low':$value=5; break;//(nvr:<, NATherm1:2368)
-			default:$value=-2; break;
-        }
-      	
-		return $value;
-            
-	}
-//////////////////////////////////////
-	public static function getBattery($type,$battery) {
+	public static function getBattery($battery_vp, $type) {
 		
-		if($battery >= 90) return 'battery_full.png'; 
-		if($battery >= 75) return 'battery_high.png';
-		if($battery >= 50) return 'battery_medium.png'; 
-		if($battery >= 30) return 'battery_low.png'; 
-		return "battery_verylow.png";
+		if($type == 'NRV'){
+          	$bat_min =2000;
+            $bat_max =3500;  
+        }elseif($type == 'NATherm1'){
+          $bat_min =2750;//3000
+          $bat_max =4800;//4500
+        }
+      	$value=round(($battery_vp - $bat_min)*100/($bat_max - $bat_min), 0);
+      	//$value= round(100-($bat_max-$battery_vp)*98/$bat_min, 0);
+      	
+      	//log::add('naEnergie', 'debug', __FUNCTION__ .' '. $battery_vp.' = '.$value.'%');
+		if($value > 100) return 100;
+      	elseif($value < 0) return 1;
+        else return $value;
 	}
-	
 ///////////////////////////////	
-	public static function getSignal($signal) {
-		if($signal >= 90) return 'signal_verylow.png';
-		if($signal >= 80) return 'signal_low.png';
-		if($signal >= 70) return 'signal_medium.png';
-		if($signal >= 60) return 'signal_high.png';
-		return 'signal_full.png';
+	public static function getrfstate($signal) {
+		if($signal >= 90) return 'very_low';
+		if($signal >= 80) return 'low';
+		if($signal >= 70) return 'medium';
+		if($signal >= 60) return 'high';
+		return 'full';
 	}
 ///////////////////////////////		
 	public static function getWifi($wifi) {
@@ -999,7 +977,8 @@ class naEnergie extends eqLogic {
 			case "NAModule4": return $type = 'Module_int';break;
 		}		
 	}
-
+//////////////////////////////////////
+	
 ///////////////////////////////		
 	public static function getRoomType($roomType) {
 		switch($roomType)
@@ -1021,7 +1000,7 @@ class naEnergie extends eqLogic {
 			case "toilet": return $roomType = 'Toilette';break;
 		}		
 	}
-  /////////////////////////////////////*********************///////////////////////////////////// 
+/////////////////////////////////////*********************///////////////////////////////////// 
     public static function removeAll(){
         log::add('naEnergie', 'debug', __FUNCTION__ . ' start ');
         $eqLogics = eqLogic::byType('naEnergie', false);
@@ -1177,9 +1156,11 @@ class naEnergie extends eqLogic {
 		//**************self::cronExt();
 	}
 	public static function cron15() {
-		log::add('naEnergie', 'info', __FUNCTION__ .' started *****************');
+		
+      	log::add('naEnergie', 'info', __FUNCTION__ .' started *****************');
 		try {
-			self::getDataRoom();
+		
+			self::getDataRoom(null);//, $nbcron
 		} 
 		catch (Exception $e) {	
 			log::add('naEnergie', 'debug', __('Erreur sur ', __FILE__) . ' : ' . $e->getMessage());
@@ -1190,6 +1171,10 @@ class naEnergie extends eqLogic {
 		$nbcron=5;
 		$eqLogics = eqLogic::byType('naEnergie', true);
 		foreach ($eqLogics as $eqLogic) {
+          	$type=$eqLogic->getConfiguration('type');
+            if ($type=='home') {
+                continue;
+            }
 			//$cron = cron::byClassAndFunction('naEnergie', 'pull', $_options);
 			try {
                 //event::add('jeedom::alert', array('level' => 'danger', 'page' => 'naEnergie', 'message' => __('Impossible de contacter le serveur ', __FILE__) . $server['name']));
@@ -1197,7 +1182,7 @@ class naEnergie extends eqLogic {
                 if ($eqLogic->getStatus('reachable_Nok', 0)>0) {
                     $eqLogic->setConfiguration('UpNumberFailed', $eqLogic->getConfiguration('UpNumberFailed', 0) + 1);
                     $eqLogic->save();
-                    log::add('naEnergie', 'error', 'Erreur du '.$eqLogic->getHumanName() . ' : Attention, il n\'y a pas eu de mise à jour des données depuis : '.  date("d-m-Y H:i", strtotime($plugUptime)) .' min'.' \n Vérifier la connexion du plugin ');
+                    log::add('naEnergie', 'error', 'Erreur du '.$eqLogic->getHumanName() . ' : Attention, il n\'y a pas eu de mise à jour des données depuis : '.  date("d-m-Y H:i", strtotime($plugUptime)) .' Vérifier la connexion du plugin ');
                 }else {
                     $eqLogic->setConfiguration('croncount', $eqLogic->getConfiguration('croncount', 0)+1);
                     $eqLogic->setConfiguration('UpNumberFailed', 0);
@@ -1215,7 +1200,8 @@ class naEnergie extends eqLogic {
 						//$temp_in = $cmd->execCmd();
 						$coltime=$cmd->getCollectDate();
 
-					if ($eqLogic->getConfiguration('UpNumberFailed', 0) > 12 && date('Y-m-d H:i:s') > date('Y-m-d H:i:s', strtotime("$coltime + $maxTimeUpdate minutes"))) {
+					if ($eqLogic->getConfiguration('UpNumberFailed', 0) > 12 
+                        && date('d-m-Y H:i:s') > date('d-m-Y H:i:s', strtotime("$coltime + $maxTimeUpdate minutes"))) {
 						log::add('naEnergie', 'error', 'Erreur '.$eqLogic->getHumanName() . __(' : Attention, il n\'y a pas eu de mise à jour des données depuis : ', __FILE__) .  date("d-m-Y H:i", strtotime($coltime)) .' min');
 						log::add('naEnergie', 'debug', __('Erreur sur ', __FILE__) .$eqLogic->getHumanName() . ' : ' . $e->getMessage());
 		
@@ -1247,12 +1233,12 @@ class naEnergie extends eqLogic {
 				//$cron = cron::byClassAndFunction('naEnergie', 'pull', $_options);
 				try {
 						//$uptime=$eqLogic->getConfiguration(dash_data['time_utc']);
-						$duptime=date('Y-m-d H:i:s', $eqLogic->getConfiguration('dash_data')['time_utc']);
+						$duptime=date('d-m-Y H:i:s', $eqLogic->getConfiguration('dash_data')['time_utc']);
 						$uptime=$eqLogic->getStatus('lastCommunication');
 						//log::add('naEnergie', 'debug','duptime: '.$duptime.' '.$uptime);
 						
-						$struptime=date('Y-m-d H:i:s', strtotime("$uptime + $maxTimeUpdate minutes"));
-						if (date('Y-m-d H:i:s') > date('Y-m-d H:i:s', strtotime("$uptime + $maxTimeUpdate minutes"))) {
+						$struptime=date('d-m-Y H:i:s', strtotime("$uptime + $maxTimeUpdate minutes"));
+						if (date('d-m-Y H:i:s') > date('d-m-Y H:i:s', strtotime("$uptime + $maxTimeUpdate minutes"))) {
 							$eqLogic->setConfiguration('UpNumberFailed', $eqLogic->getConfiguration('UpNumberFailed', 0) + 1);
 							
 							log::add('naEnergie', 'error', 'Erreur de '.$eqLogic->getHumanName() . ' : Attention, il n\'y a pas eu de mise à jour des données depuis : '.  date("d-m-Y H:i", strtotime($uptime)) .' min'.' verifier la connectivité des appareils ');
@@ -1270,8 +1256,8 @@ class naEnergie extends eqLogic {
 					$eqLogic->save();
 						//$probefail=$eqLogic->getCache('probe_failure', 0);
 						$uptime=$eqLogic->getStatus('lastCommunication');
-						$struptime=date('Y-m-d H:i:s', strtotime("$uptime + $maxTimeUpdate minutes"));
-					if ($eqLogic->getConfiguration('UpNumberFailed', 0) > 12 && date('Y-m-d H:i:s') > date('Y-m-d H:i:s', strtotime("$uptime + $maxTimeUpdate minutes"))) {
+						$struptime=date('d-m-Y H:i:s', strtotime("$uptime + $maxTimeUpdate minutes"));
+					if ($eqLogic->getConfiguration('UpNumberFailed', 0) > 12 && date('d-m-Y H:i:s') > date('d-m-Y H:i:s', strtotime("$uptime + $maxTimeUpdate minutes"))) {
 						log::add('naEnergie', 'error', 'Erreur 3 '.$eqLogic->getHumanName() . ' : Attention, il n\'y a pas eu de mise à jour des données depuis : '.  date("d-m-Y H:i", strtotime($uptime)) .' min');
 						log::add('naEnergie', 'debug', __('Erreur 10 sur ', __FILE__) .$eqLogic->getHumanName() . ' : ' . $e->getMessage());
 					}else {
@@ -1302,12 +1288,12 @@ class naEnergie extends eqLogic {
 				//$cron = cron::byClassAndFunction('naEnergie', 'pull', $_options);
 				try {
 						//$uptime=$eqLogic->getConfiguration(dash_data['time_utc']);
-						$duptime=date('Y-m-d H:i:s', $eqLogic->getConfiguration('dash_data')['time_utc']);
+						$duptime=date('d-m-Y H:i:s', $eqLogic->getConfiguration('dash_data')['time_utc']);
 						$uptime=$eqLogic->getStatus('lastCommunication');
 						//log::add('naEnergie', 'debug','duptime: '.$duptime.' '.$uptime);
 						
-						$struptime=date('Y-m-d H:i:s', strtotime("$uptime + $maxTimeUpdate minutes"));
-						if (date('Y-m-d H:i:s') > date('Y-m-d H:i:s', strtotime("$uptime + $maxTimeUpdate minutes"))) {
+						$struptime=date('d-m-Y H:i:s', strtotime("$uptime + $maxTimeUpdate minutes"));
+						if (date('d-m-Y H:i:s') > date('d-m-Y H:i:s', strtotime("$uptime + $maxTimeUpdate minutes"))) {
 							$eqLogic->setConfiguration('UpNumberFailed', $eqLogic->getConfiguration('UpNumberFailed', 0) + 1);
 							
 							log::add('naEnergie', 'error', 'Erreur de '.$eqLogic->getHumanName() . ' : Attention, il n\'y a pas eu de mise à jour des données depuis : '.  date("d-m-Y H:i", strtotime($uptime)) .' min'.' verifier la connectivité des appareils ');
@@ -1325,8 +1311,8 @@ class naEnergie extends eqLogic {
 					$eqLogic->save();
 						//$probefail=$eqLogic->getCache('probe_failure', 0);
 						$uptime=$eqLogic->getStatus('lastCommunication');
-						$struptime=date('Y-m-d H:i:s', strtotime("$uptime + $maxTimeUpdate minutes"));
-					if ($eqLogic->getConfiguration('UpNumberFailed', 0) > 12 && date('Y-m-d H:i:s') > date('Y-m-d H:i:s', strtotime("$uptime + $maxTimeUpdate minutes"))) {
+						$struptime=date('d-m-Y H:i:s', strtotime("$uptime + $maxTimeUpdate minutes"));
+					if ($eqLogic->getConfiguration('UpNumberFailed', 0) > 12 && date('d-m-Y H:i:s') > date('d-m-Y H:i:s', strtotime("$uptime + $maxTimeUpdate minutes"))) {
 						log::add('naEnergie', 'error', 'Erreur 3 '.$eqLogic->getHumanName() . ' : Attention, il n\'y a pas eu de mise à jour des données depuis : '.  date("d-m-Y H:i", strtotime($uptime)) .' min');
 						log::add('naEnergie', 'debug', __('Erreur 10 sur ', __FILE__) .$eqLogic->getHumanName() . ' : ' . $e->getMessage());
 					}else {
@@ -1343,7 +1329,13 @@ class naEnergie extends eqLogic {
 
 /////////////////////////////////////////
 	public function postSave() {
-			log::add('naEnergie', 'debug', '    '.__FUNCTION__ .'  *****');
+		$type=$this->getConfiguration('type');
+      	if ($type=='home') {
+        	return;
+        }
+      	log::add('naEnergie', 'debug', '    '.__FUNCTION__ .'  *****');
+      	list($roomid,$homeid) = explode('|', $this->getLogicalId());
+        
 		// cmdinfo:  ******************************** //
 			$naEnergiecmd = $this->getCmd(null, 'consigne');
 			if (!is_object($naEnergiecmd)) {
@@ -1352,6 +1344,8 @@ class naEnergie extends eqLogic {
 				$naEnergiecmd->setUnite('°C');
 				$naEnergiecmd->setName(__('Consigne', __FILE__));
 				$naEnergiecmd->setConfiguration('historizeMode', 'none');
+              	$naEnergiecmd->setConfiguration('cmdType', 'room');
+              	$naEnergiecmd->setConfiguration('roomid', $roomid);
 				$naEnergiecmd->setIsHistorized(1);
               	$naEnergiecmd->setIsVisible(0);
 			}
@@ -1369,7 +1363,9 @@ class naEnergie extends eqLogic {
 			if (!is_object($naEnergiecmd)) {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('Température', __FILE__));
-				$naEnergiecmd->setIsHistorized(1);
+				$naEnergiecmd->setConfiguration('cmdType', 'room');
+              	$naEnergiecmd->setConfiguration('roomid', $roomid);
+              	$naEnergiecmd->setIsHistorized(1);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('temperature');
@@ -1384,7 +1380,9 @@ class naEnergie extends eqLogic {
 			if (!is_object($naEnergiecmd)) {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('ModeTech (Room)', __FILE__));
-			}
+				$naEnergiecmd->setConfiguration('cmdType', 'room');
+              	$naEnergiecmd->setConfiguration('roomid', $roomid);
+            }
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('room_modetech');
 			$naEnergiecmd->setType('info');
@@ -1396,6 +1394,8 @@ class naEnergie extends eqLogic {
 			if (!is_object($naEnergiecmd)) {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('Mode Thermostat ModeTech (Home)', __FILE__));
+              	$naEnergiecmd->setConfiguration('cmdType', 'home');
+            	$naEnergiecmd->setConfiguration('homeid', $homeid);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('home_modetech');
@@ -1409,19 +1409,22 @@ class naEnergie extends eqLogic {
 			if (!is_object($naEnergiecmd)) {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('Infos Modules', __FILE__));
-			}
+				$naEnergiecmd->setConfiguration('cmdType', 'room');
+            	$naEnergiecmd->setConfiguration('roomid', $roomid);
+            }
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('eqmodules');
 			$naEnergiecmd->setType('info');
 			$naEnergiecmd->setSubType('string');
 			//$naEnergiecmd->setDisplay('generic_type', 'THERMOSTAT_MODE');
-      		$naEnergiecmd->setOrder(7);
-			$naEnergiecmd->save();
+      		$naEnergiecmd->setOrder(7);$naEnergiecmd->save();
 		// cmdinfo:  ******************************** //
 			$naEnergiecmd = $this->getCmd(null, 'listplanning');
 			if (!is_object($naEnergiecmd)) {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('Liste Planning', __FILE__));
+              	$naEnergiecmd->setConfiguration('cmdType', 'home');
+            	$naEnergiecmd->setConfiguration('homeid', $homeid);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('listplanning');
@@ -1434,6 +1437,8 @@ class naEnergie extends eqLogic {
 			if (!is_object($naEnergiecmd)) {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('Planning en cours', __FILE__));
+              	$naEnergiecmd->setConfiguration('cmdType', 'home');
+            	$naEnergiecmd->setConfiguration('homeid', $homeid);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('nowplanning');
@@ -1446,6 +1451,8 @@ class naEnergie extends eqLogic {
 			if (!is_object($naEnergiecmd)) {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('Id planning en cours', __FILE__));
+              	$naEnergiecmd->setConfiguration('cmdType', 'home');
+            	$naEnergiecmd->setConfiguration('homeid', $homeid);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('nowplanid');
@@ -1458,18 +1465,21 @@ class naEnergie extends eqLogic {
 			if (!is_object($naEnergiecmd)) {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('Liste Profil', __FILE__));
-			}
+				$naEnergiecmd->setConfiguration('cmdType', 'room');
+            	$naEnergiecmd->setConfiguration('roomid', $roomid);
+            }
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('listprofil');
 			$naEnergiecmd->setType('info');
 			$naEnergiecmd->setSubType('string');
-			$naEnergiecmd->setOrder(13);
-			$naEnergiecmd->save();
+			$naEnergiecmd->setOrder(13);$naEnergiecmd->save();
 		// cmdinfo:  ******************************** //
 			$naEnergiecmd = $this->getCmd(null, 'nowprofil');
 			if (!is_object($naEnergiecmd)) {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('Profile de température', __FILE__));
+				$naEnergiecmd->setConfiguration('cmdType', 'room');
+            	$naEnergiecmd->setConfiguration('roomid', $roomid);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('nowprofil');
@@ -1482,6 +1492,8 @@ class naEnergie extends eqLogic {
 			if (!is_object($naEnergiecmd)) {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('Profile suivant', __FILE__));
+				$naEnergiecmd->setConfiguration('cmdType', 'room');
+            	$naEnergiecmd->setConfiguration('roomid', $roomid);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('nextprofil');
@@ -1494,6 +1506,8 @@ class naEnergie extends eqLogic {
 			if (!is_object($naEnergiecmd)) {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('Délai prochain profile', __FILE__));
+				$naEnergiecmd->setConfiguration('cmdType', 'room');
+            	$naEnergiecmd->setConfiguration('roomid', $roomid);
 				$naEnergiecmd->setIsHistorized(0);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
@@ -1509,6 +1523,8 @@ class naEnergie extends eqLogic {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('Tendance prochain profile', __FILE__));
 				$naEnergiecmd->setIsHistorized(0);
+				$naEnergiecmd->setConfiguration('cmdType', 'room');
+            	$naEnergiecmd->setConfiguration('roomid', $roomid);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('nextprofil_tendance');
@@ -1523,6 +1539,8 @@ class naEnergie extends eqLogic {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('Début Mode en Cours', __FILE__));
 				$naEnergiecmd->setIsHistorized(0);
+				$naEnergiecmd->setConfiguration('cmdType', 'room');
+            	$naEnergiecmd->setConfiguration('roomid', $roomid);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('setpointmode_starttime');
@@ -1537,6 +1555,8 @@ class naEnergie extends eqLogic {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('Fin Mode en Cours', __FILE__));
 				$naEnergiecmd->setIsHistorized(0);
+				$naEnergiecmd->setConfiguration('cmdType', 'room');
+            	$naEnergiecmd->setConfiguration('roomid', $roomid);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('setpointmode_endtime');
@@ -1550,6 +1570,8 @@ class naEnergie extends eqLogic {
 			if (!is_object($naEnergiecmd)) {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('Anticipation en cours(Room)', __FILE__));
+				$naEnergiecmd->setConfiguration('cmdType', 'room');
+            	$naEnergiecmd->setConfiguration('roomid', $roomid);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('room_anticipating');
@@ -1563,6 +1585,8 @@ class naEnergie extends eqLogic {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('Anticipation Chaudiere(Home)', __FILE__));
 				$naEnergiecmd->setIsHistorized(1);
+              	$naEnergiecmd->setConfiguration('cmdType', 'home');
+            	$naEnergiecmd->setConfiguration('homeid', $homeid);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('boiler_anticipating');
@@ -1577,6 +1601,8 @@ class naEnergie extends eqLogic {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('Etat Chaudiere (Home)', __FILE__));
 				$naEnergiecmd->setIsHistorized(1);
+              	$naEnergiecmd->setConfiguration('cmdType', 'home');
+            	$naEnergiecmd->setConfiguration('homeid', $homeid);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('boiler_status');
@@ -1591,6 +1617,8 @@ class naEnergie extends eqLogic {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('requestOn (Room)', __FILE__));
 				$naEnergiecmd->setIsHistorized(1);
+				$naEnergiecmd->setConfiguration('cmdType', 'room');
+            	$naEnergiecmd->setConfiguration('roomid', $roomid);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('requestOn');
@@ -1605,6 +1633,8 @@ class naEnergie extends eqLogic {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('Statut pour mobile', __FILE__));
 				$naEnergiecmd->setIsHistorized(1);
+				$naEnergiecmd->setConfiguration('cmdType', 'room');
+            	$naEnergiecmd->setConfiguration('roomid', $roomid);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('statusname');
@@ -1619,6 +1649,8 @@ class naEnergie extends eqLogic {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('T° Hors-gel', __FILE__));
 				$naEnergiecmd->setIsHistorized(0);
+              	$naEnergiecmd->setConfiguration('cmdType', 'home');
+            	$naEnergiecmd->setConfiguration('homeid', $homeid);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('hg_temp');
@@ -1634,6 +1666,8 @@ class naEnergie extends eqLogic {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('T° Absence', __FILE__));
 				$naEnergiecmd->setIsHistorized(0);
+              	$naEnergiecmd->setConfiguration('cmdType', 'home');
+            	$naEnergiecmd->setConfiguration('homeid', $homeid);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('away_temp');
@@ -1649,6 +1683,8 @@ class naEnergie extends eqLogic {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('Signal Wifi', __FILE__));
 				$naEnergiecmd->setIsHistorized(1);
+              	$naEnergiecmd->setConfiguration('cmdType', 'home');
+            	$naEnergiecmd->setConfiguration('homeid', $homeid);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('wifistatus');
@@ -1663,12 +1699,14 @@ class naEnergie extends eqLogic {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('Signal RF', __FILE__));
 				$naEnergiecmd->setIsHistorized(1);
+				$naEnergiecmd->setConfiguration('cmdType', 'room');
+            	$naEnergiecmd->setConfiguration('roomid', $roomid);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('rfstatus');
 			$naEnergiecmd->setUnite('%');
 			$naEnergiecmd->setType('info');
-			$naEnergiecmd->setSubType('numeric');
+			$naEnergiecmd->setSubType('string');
 			$naEnergiecmd->setOrder(31);
 			$naEnergiecmd->save();
 		// cmdinfo:  ******************************** //
@@ -1677,6 +1715,8 @@ class naEnergie extends eqLogic {
 				$naEnergiecmd = new naEnergiecmd();
 				$naEnergiecmd->setName(__('Batterie', __FILE__));
 				$naEnergiecmd->setIsHistorized(1);
+				$naEnergiecmd->setConfiguration('cmdType', 'room');
+            	$naEnergiecmd->setConfiguration('roomid', $roomid);
 			}
 			$naEnergiecmd->setEqLogic_id($this->getId());
 			$naEnergiecmd->setLogicalId('batterie');
@@ -1684,39 +1724,49 @@ class naEnergie extends eqLogic {
 			$naEnergiecmd->setSubType('numeric');
 			$naEnergiecmd->setOrder(32);
 			$naEnergiecmd->save();
-		// cmdinfo:  ******************************** //
-				$naEnergiecmd = $this->getCmd(null, 'open_window');
-                if (!is_object($naEnergiecmd)) {
-                    $naEnergiecmd = new naEnergiecmd();
-                    $naEnergiecmd->setName(__('Fenetre ouverte', __FILE__));
-                    $naEnergiecmd->setIsHistorized(1);
-                }
-                $naEnergiecmd->setEqLogic_id($this->getId());
-                $naEnergiecmd->setLogicalId('open_window');
-                $naEnergiecmd->setType('info');
-                $naEnergiecmd->setSubType('binary');
-                //$naEnergiecmd->setDisplay('generic_type', 'THERMOSTAT_STATE');
-                $naEnergiecmd->setOrder(41);
-				$naEnergiecmd->save();
-		// cmdinfo:  ******************************** //
-				$naEnergiecmd = $this->getCmd(null, 'powerRequest');
-                if (!is_object($naEnergiecmd)) {
-                    $naEnergiecmd = new naEnergiecmd();
-                    $naEnergiecmd->setName(__('Ouverture vanne', __FILE__));
-                    $naEnergiecmd->setIsHistorized(1);
-                }
-                $naEnergiecmd->setEqLogic_id($this->getId());
-                $naEnergiecmd->setLogicalId('powerRequest');
-                $naEnergiecmd->setType('info');
-      			$naEnergiecmd->setUnite('%');
-                $naEnergiecmd->setSubType('numeric');
-                //$naEnergiecmd->setDisplay('generic_type', 'THERMOSTAT_STATE');
-                $naEnergiecmd->setOrder(42);
-				$naEnergiecmd->save();  
+		
+		
       		
       
       	if ($this->getConfiguration('type')== 'NRV' ) {
-		}//fin if ($this->getConfiguration('type')== 'NRV'
+			// cmdinfo:  ******************************** //
+			$naEnergiecmd = $this->getCmd(null, 'open_window');
+            if (!is_object($naEnergiecmd)) {
+                $naEnergiecmd = new naEnergiecmd();
+                $naEnergiecmd->setName(__('Fenetre ouverte', __FILE__));
+                $naEnergiecmd->setIsHistorized(1);
+				$naEnergiecmd->setConfiguration('cmdType', 'room');
+            	$naEnergiecmd->setConfiguration('roomid', $roomid);
+            }
+           	$naEnergiecmd->setEqLogic_id($this->getId());
+            $naEnergiecmd->setLogicalId('open_window');
+            $naEnergiecmd->setType('info');
+            $naEnergiecmd->setSubType('binary');
+            //$naEnergiecmd->setDisplay('generic_type', 'THERMOSTAT_STATE');
+            $naEnergiecmd->setOrder(41);
+			$naEnergiecmd->save();
+        // cmdinfo:  ******************************** //
+			$naEnergiecmd = $this->getCmd(null, 'powerRequest');
+            if (!is_object($naEnergiecmd)) {
+                $naEnergiecmd = new naEnergiecmd();
+                $naEnergiecmd->setName(__('Ouverture vanne', __FILE__));
+                $naEnergiecmd->setIsHistorized(1);
+				$naEnergiecmd->setConfiguration('cmdType', 'room');
+            	$naEnergiecmd->setConfiguration('roomid', $roomid);
+            }
+            $naEnergiecmd->setEqLogic_id($this->getId());
+            $naEnergiecmd->setLogicalId('powerRequest');
+            $naEnergiecmd->setType('info');
+      		$naEnergiecmd->setUnite('%');
+            $naEnergiecmd->setSubType('numeric');
+            //$naEnergiecmd->setDisplay('generic_type', 'THERMOSTAT_STATE');
+            $naEnergiecmd->setOrder(42);
+			$naEnergiecmd->save();  
+        
+        
+        
+        
+        }//fin if ($this->getConfiguration('type')== 'NRV'
       
       
       	/*---------------------------------------------------------------*/	
@@ -1993,6 +2043,8 @@ class naEnergie extends eqLogic {
                 $refreshall->setLogicalId('refreshall');
                 $refreshall->setIsVisible(1);
                 $refreshall->setName(__('Rafraichir Tout (Home)', __FILE__));
+              	$refreshall->setConfiguration('cmdType', 'home');
+            	$refreshall->setConfiguration('homeid', $homeid);
             }
             $refreshall->setType('action');
             $refreshall->setSubType('other');
@@ -2035,13 +2087,20 @@ class naEnergie extends eqLogic {
 			
 			if ( $cmd->getConfiguration('isdate', false)) {
 				$actualdate=date('d/m/Y');
-              	if ($actualdate == date('d/m/Y', strtotime($cmd->execCmd()) )) {//date('d/m/Y', strtotime($cmd->execCmd()))
-					$replace['#' . $cmd->getLogicalId() . '#'] = date('H:i', strtotime($cmd->execCmd()));
+              	$cmdvalue=$cmd->execCmd();
+              	$cmdLogId=$cmd->getLogicalId();
+              	if (!$cmdvalue) {//date('d/m/Y', strtotime($cmd->execCmd()))
+					$htmlvalue = '';
+				}elseif ($cmdvalue == 'Nouvel Ordre' ) {//date('d/m/Y', strtotime($cmd->execCmd()))
+					$htmlvalue = 'Nouvel Ordre';
+				}elseif ($actualdate == date('d/m/Y', strtotime($cmdvalue) )) {//date('d/m/Y', strtotime($cmd->execCmd()))
+					$htmlvalue = date('H:i', strtotime($cmdvalue));
 				}else {
-					$replace['#' . $cmd->getLogicalId() . '#'] = date('d/m H:i', strtotime($cmd->execCmd()));
+					$htmlvalue = date('d/m H:i', strtotime($cmdvalue));
 				}
+              	$replace['#' . $cmdLogId. '#'] = $htmlvalue;
               	//$vcmd=$cmd->execCmd();
-              	//log::add('naEnergie', 'debug', ' '.__FUNCTION__ .'  date: '.$vcmd.' to: '.$replace['#' . $cmd->getLogicalId() . '#'] );
+              	//log::add('naEnergie', 'debug', ' '.__FUNCTION__ .' cmdvalue: '.$cmdvalue.' to: '.$htmlvalue );
             }
           	if ($cmd->getIsHistorized() == 1) {
 				$replace['#' . $cmd->getLogicalId() . '_history#'] = 'history cursor';
@@ -2254,13 +2313,8 @@ class naEnergieCmd extends cmd {
 			if (isset($_options['message'])){
 				$time=$_options['message'];
               	$endtime = time() + ($time* 60);
-			}else{
-              	$defaultime = $eqLogic->getConfiguration('spmDuration');
-              	if ($defaultime == null || $defaultime == '') {
-					$defaultime = 60;
-				}
-				$endtime = time() + ($defaultime * 60);
-            }
+			}
+          	
           	$setmode = substr($action,3);
 			$command = $eqLogic->changeHomeTherm($eqLogic->getLogicalId(), $setmode, $endtime);
               	
@@ -2302,7 +2356,7 @@ class naEnergieCmd extends cmd {
 		/////
       	elseif ($action == 'awaymobile' || $action == 'hgmobile' || $action == 'maxmobile' ) {
 			if ($action == 'maxmobile') {
-				$defaultime = $eqLogic->getConfiguration('spmDuration');
+				$defaultime = $eqLogic->getConfiguration('spm_duaration');
 				if ($defaultime == null || $defaultime == '') {
 					$defaultime = 60;
 				}

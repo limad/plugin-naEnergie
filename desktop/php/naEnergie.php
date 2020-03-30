@@ -117,7 +117,7 @@ $plugName=$plugin->getName();
 						<form class="form-horizontal">
 							<fieldset>
 								<div class="form-group">
-									<label class="col-lg-4 control-label" >{{Nom du thermostat}}</label>
+									<label class="col-lg-4 control-label" >{{Nom de la pièce}}</label>
 									<div class="col-lg-6">
 										<input type="text" class="eqLogicAttr form-control" data-l1key="id" style="display : none;  " />
 										<input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom du thermostat}}" />
@@ -150,33 +150,46 @@ $plugName=$plugin->getName();
 						<legend><i class="fas fa-info" aria-hidden="true"></i> {{Informations}}</legend>
 						<form class="form-horizontal">
 							<fieldset>
-								
-								
-								
-								
-								
+									<!--*******************************  -->
 									<div class="form-group" id="ident">
 										<label class="col-lg-4 control-label">{{Identifiant}}</label>
 											<div class="col-lg-4">
 												<input disabled  class="eqLogicAttr form-control"  data-l1key="logicalId"/>
 											</div>
 									</div> 
-												<!--*******************************  --> 
-									<div class="form-group" id="firmware" >
+									
+                                    
+                                    <!--*******************************  -->
+                                    <!--
+                                              
+                                        <div class="form-group" id="firmware" >
 										<label class="col-lg-4 control-label">{{Firmware}}</label>
 											<div class="col-lg-4">
-												<input disabled class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="Firmware"/>
+												<input disabled class="eqLogicAttr form-control" data-l1key="configuration" 
+                                              		data-l2key="firmware"/>
 											</div>
 											
 									</div>
-									
-									
-	<div class="form-group" id="NAtype">
+									-->
+									<!--*******************************  -->						
+									<div class="form-group" id="NAtype">
 										<label class="col-lg-4 control-label">{{Type}}</label>
 											<div class="col-lg-4">
-												<input disabled  class="eqLogicAttr form-control"  data-l1key="configuration" data-l2key="NAtype" />
+												<input disabled  class="eqLogicAttr form-control"  
+                                              		data-l1key="configuration" data-l2key="NAtype" />
 											</div>
 									</div>
+                                              
+                                 <!--*******************************  --> 
+									<div class="form-group" id="home" >
+										<label class="col-lg-4 control-label">{{Home}}</label>
+											<div class="col-lg-4">
+												<input disabled class="eqLogicAttr form-control" data-l1key="configuration" 
+                                              		data-l2key="parentName"/>
+											</div>
+											
+									</div>
+                                  <!--*******************************  -->            
      <!--                                         
                                               
    <div class="form-group">
@@ -256,30 +269,36 @@ $plugName=$plugin->getName();
 			<!--Config durées par défaut-->
 				<form class="form-horizontal">
 					<fieldset>
-						<legend><i class="fas fa-calendar" aria-hidden="true"></i> {{Configuration durées par défaut}}</legend>
+						<legend><i class="fas fa-calendar" aria-hidden="true"></i> {{Configuration durées par défaut(min)}}</legend>
 						<form class="form-horizontal">
 						<div class="col-lg-6">
 							
 							
 							
-							<div class="form-group" id="maxdefault">
-								<label class="col-lg-4 control-label" >{{Mode Manuel}}</label>
+							<div class="form-group" id="spm_duaration">
+								<label class="col-lg-4 control-label" >{{Mode Manuel}}
+                                <sup><i class="fas fa-question-circle tooltips" title="Paramètre Netatmo"></i></sup>
+                                 </label>
 									<div class="col-lg-4">
-										<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="maxdefault" placeholder="{{Durée en minutes (60 par défaut)}}"/>
+										<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="spm_duaration" placeholder="{{Durée en minutes (60 par défaut)}}"/>
 									</div>
 							</div> 
 										<!--*******************************  --> 
-							<div class="form-group" id="awaymaxt" >
-								<label class="col-lg-4 control-label">{{Mode absent}}</label>
+							<div class="form-group" id="away_duaration" >
+								<label class="col-lg-4 control-label">{{Mode absent}}
+                                <sup><i class="fas fa-question-circle tooltips" title="Paramètre Jeedom"></i></sup>
+                                 </label>
 									<div class="col-lg-4">
-										<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="awaymaxt" placeholder="{{Durée en minutes (60 par défaut)}}" />
+										<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="away_duaration" placeholder="{{Optionnel(Défaut: Nouvel Ordre)}}" />
 									</div>
 							</div>   
 										<!--*******************************  -->  
-							<div class="form-group"  id="boostmaxt">
-								<label class="col-lg-4 control-label">{{Durée ECSBoost}}</label>
+							<div class="form-group"  id="hg_duaration">
+								<label class="col-lg-4 control-label">{{Mode H.gel}}
+                                	<sup><i class="fas fa-question-circle tooltips" title="Paramètre Jeedom"></i></sup>
+                                </label>
 									<div class="col-lg-4">
-										<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="boostmaxt" placeholder="{{Durée en minutes (60 par défaut)}}"/>
+										<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="hg_duaration" placeholder="{{Optionnel(Défaut: Nouvel Ordre)}}"/>
 									</div>
 							</div> 
 						</div>
@@ -304,19 +323,30 @@ $plugName=$plugin->getName();
 							</div>
 							<!--*******************************  -->
 							<div class="form-group" id="tuileytpe">
-								<label class="col-lg-4 control-label" style="top: 6px; "> {{Type de la tuile}}</label>
+								<label class="col-lg-4 control-label" > {{Type de la tuile}}</label>
 								<div class="col-lg-4">
 								<select id="sel_tuile" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="eqtuile">
-											<option value="plug1" selected="selected"> {{Default}}</option>
-											<option value="plug2" > {{Tuile2}}</option>
+											<option value="default" selected="selected"> {{Default}}</option>
+											<!--<option value="plug2" > {{Tuile2}}</option>-->
                                             <option value="core"> {{Core}}</option>
 								</select>
 								
 								</div>
 							</div> 
 							<!--*******************************  -->
-                                              
-                                
+                             <div class="form-group" id="temp-out">
+                              <label class="col-lg-4 control-label">{{Température extérieure}}</label>
+                              <div class="col-lg-8">
+                                  <div class="input-group">
+                                      <input type="text" class="eqLogicAttr form-control tooltips" data-l1key="configuration" data-l2key="temperature_ext" data-concat="1" />
+                                      <span class="input-group-btn">
+                                          <a class="btn btn-default listCmdInfo"><i class="fas fa-list-alt"></i></a>
+                                      </span>
+                                  </div>
+                              </div>
+                            </div>
+                            <br/>                 
+                            <!--*******************************  -->   
 								<!--
 								<div class="form-group" id="adv_config1">
 									<label class="col-lg-4 control-label"  ></label>

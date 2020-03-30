@@ -2,10 +2,7 @@
       style="min-height: 230px;min-width:230px; position: relative; width:#width#; height:#height#;
              background-color:#background-color#; color:#color#; border:#border#; border-radius:#border-radius#;#style#"
       data-eqType="#eqType#" data-eqLogic_id="#id#" data-eqLogic_uid="#uid#" data-nahome_id="#nahomeid#" data-cat_color="#catcolore#" 
-      data-version="#version#" data-translate-category="#translate_category#" data-category="#category#" data-tags="#tags#"  
-     data-alert_color="#background-color#!important">
-   
-  <link rel="stylesheet" nonce="" href="plugins/naEnergie/core/template/dashboard/src/naEnergie.css">  
+      data-version="#version#" data-translate-category="#translate_category#" data-category="#category#" data-tags="#tags#">
    
   <link rel="stylesheet" nonce="" href="plugins/naEnergie/core/template/dashboard/src/naEnergie.css">     
   <span class="statusCmd"></span>
@@ -13,25 +10,28 @@
   <center class="widget-name">
         <div class="cmd naboilerstatus #therm_boilerstatus_history#" title="Chaudière arrêtée"
              style="position:absolute; left:3px; top:5px;" data-cmd_id='#therm_boilerstatus_id#'>
-			<span class="icon jeedom-feu" style="" ></span>
-		</div>
+	<span class="icon jeedom-feu" style="" ></span>
+</div>
     
-    	<span class="reportModeVisible" style="display:none">#object_name#</span>
+    
+    
+		
+		<!--<span class="cmd anticipation pull-left cursor" title="Pas d'anticipation en cours"  data-cmd_id='#heatstatus_id#' 
+                 style="margin-top: 5px; margin-left: 3px;color:#3498db !important;">
+			<i class="icon jeedomapp-playerplay "></i>
+		</span>	
+-->
+          
+      	<span class="reportModeVisible" style="display:none">#object_name#</span>
 		<a href="#eqLink#" class="reportModeHidden" style="margin-right: 25px;">#name_display# </a>
 </center> 
   <script type="text/javascript">
 	
-    ///////////////
-    $('.eqLogic[data-eqLogic_uid=#uid#] .refresh').on('click', function () {
-		//console.log("refresh_id: "   )
-      jeedom.cmd.execute({id: '#refresh_id#'});
+	$('.eqLogic[data-eqLogic_uid=#uid#] .refresh').on('click', function () {
+		jeedom.cmd.execute({id: '#refresh_id#'});
     });
-   
-   $('.eqLogic[data-eqLogic_uid=#uid#]').ready(function(el) { 
+	$('.eqLogic[data-eqLogic_uid=#uid#]').ready(function(el) { 
 		catcolor = $('.eqLogic[data-eqLogic_uid=#uid#] .widget-name').css('background-color');
-		catcolor_a =(catcolor) ? catcolor.replace(')', ', 0.5)').replace('rgb', 'rgba') :'';
-		
-		console.log("catcolor: " + catcolor);
 		$('.eqLogic[data-eqLogic_uid=#uid#]').closest('.eqLogic-widget').attr('data-cat_color', catcolor);				
 		eq_width = $('.eqLogic[data-eqLogic_uid=#uid#]').closest('.eqLogic-widget').css('width');
 		eq_height = $('.eqLogic[data-eqLogic_uid=#uid#]').closest('.eqLogic-widget').css('height');
@@ -39,19 +39,13 @@
 		if ('#deviceName#' != '' ) {
         	$('.eqLogic[data-eqLogic_uid=#uid#] .wname').append(' - #deviceName#');
         }
-     
      	if ('#etat#' == 1) {
         	$('.eqLogic[data-eqLogic_uid=#uid#] .icon_etat').css('color', cat_color + '!important');
         }
-     	
-     	//infcmd
-	})
-    //$('.div_displayEquipement 
-  
+    });
 	$('.eqLogic[data-nahome_id=#nahomeid#]').each(function() {
 		console.log('each:' + $(this).find('.room').attr('class') );
-      	//$(this).find('.room').hide();
-    })
+    });
 	</script>
 	<section> 	
         <span class="cmd cmd-widget" data-cmd_id="#homeAuto_id#" style="display:none;"></span>
@@ -74,38 +68,40 @@
   <div class="eq_body">
  
 <center>
-
-  
-  
-  
-  <!-- ******* test <span class="consdec decimal" style="left:24px;">0</span>************  -->
-	<div class="room circle" data-thmode="">
+    <!-- ******* test <span class="consdec decimal" style="left:24px;">0</span>************  -->
+	<div class="room therm-room " data-thmode="">
 		<div class="room-temperature h-relative">
           	<div class="naModeinfos" data-cmd_id="#consigne_id#">
               <!--<i class="fas fa-wrench"></i>
               <i class="fas fa-home"></i>-->
 				<!--<a class="namode na-icon-manualb" data-cmd_id="#cancel_id#"></a>-->
-				<a class="natendance na-icon-manuala " data-cmd_id="#set_minus_one_id#"></a>
+				<a class="natendance na-icon-manuala " data-cmd_id="#natendance_id#"></a>
         		
 
 			</div>
       	
-			
+			<span class="top h-absolute "></span>
+			<span class="right h-absolute "></span>
+			<span class="bottom h-absolute "></span>
+			<span class="left h-absolute "></span>
 			<span class="hide natemp#id#">#temperature#</span>
 			<span class="cmd-widget #temperature_history# tempent" data-type="info" data-cmd_id="#temperature_id#">
                <span class="tempdec decimal"></span>
           	</span>
 		</div>
-      	<div class="room-setpoint circle-setpoint h-relative">
-			
+      	<div class="room-setpoint h-relative">
+			<span class="top h-absolute" ></span>
+			<span class="right h-absolute" ></span>
+			<span class="bottom h-absolute"></span>
+			<span class="left h-absolute"></span>
             <span class="hide nacons#id#">#consigne#</span>
 			<span class="cmd-widget #consigne_history# consent" data-type="info" data-cmd_id="#consigne_id#">
               <span class="consdec decimal"></span>
             </span>
-			<div class="nacontrol" data-cmd_id="#consigneset_id#">
-				<i class="cmd-widget icon fas fa-2x fa-plus-circle na_cons_up " data-type="action"> </i>
+			<div class="nacontrol left h-absolute" data-cmd_id="#consigneset_id#">
+				<i class="cmd-widget icon fas fa-2x fa-plus-square na_cons_up " data-type="action"> </i>
                 <br>
-          		<i class="cmd-widget icon fas fa-2x fa-minus-circle na_cons_down " data-type="action" ></i>
+          		<i class="cmd-widget icon fas fa-2x fa-minus-square na_cons_down " data-type="action" ></i>
                 
 			</div>
       		<div class="naconsinfo">
@@ -118,7 +114,6 @@
 		
 	</div>
   
- 	
  	<!-- *******************  -->
 							
 <script>
@@ -299,30 +294,21 @@
 <br/>   	
 <!-- *********************  -->
   <center>
-<div class="tooltips cmd cmd-widget " data-type="info" data-subtype="string" data-cmd_id="#requestOn_id#" data-cmd_uid="cmd_#requestOn_id#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" style="margin-left: 5px; margin-top: 5px;">
+<div class="tooltips cmd cmd-widget " data-type="info" data-subtype="string" data-cmd_id="#requestOn_id#" data-cmd_uid="cmd_#requestOn_id#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" style="margin-right: 15px; margin-top: 5px;">
 	<div class="content-xs">
 		<span class="cmdName">requestOn: </span> 
 		<strong class="state">#requestOn#</strong>
 	</div>
 </div> 
-  <!-- *********************  -->   
- <div class="tooltips cmd cmd-widget " data-type="info" data-subtype="string" data-cmd_id="#powerRequest_id#" data-cmd_uid="cmd_#powerRequest_id#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" style="margin-left: 5px; margin-top: 5px;">
-	<div class="content-xs">
-		<span class="cmdName">Ouverture vanne: </span> 
-		<strong class="state">#powerRequest#%</strong>
-	</div>
-</div> 
- 
  
   <!-- *********************  -->
-    <br/>
-<div class="tooltips cmd cmd-widget " data-type="info" data-subtype="string" data-cmd_id="#open_window_id#" data-cmd_uid="cmd_#open_window_id#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" style="margin-left: 5px; margin-top: 5px;">
+<div class="tooltips cmd cmd-widget " data-type="info" data-subtype="string" data-cmd_id="#open_window_id#" data-cmd_uid="cmd_#open_window_id#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" style="margin-left: 15px; margin-top: 5px;">
             <div class="content-xs">
                 <span class="cmdName">open_window: </span> 
                 <strong class="state">#open_window#</strong>
             </div>
 </div> 
-
+<br/>
   <!-- *********************  -->
 <div class="tooltips cmd cmd-widget " data-type="info" data-subtype="string" data-cmd_id="#home_modetech_id#" data-cmd_uid="cmd_#home_modetech_id#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" style="margin-left: 5px; margin-top: 5px;">
             <div class="content-xs">
@@ -332,7 +318,7 @@
 </div>
  <br/>
   <!-- *********************  -->
- <div class="tooltips cmd cmd-widget " data-type="info" data-subtype="string" data-cmd_id="#boiler_anticipating_id#" data-cmd_uid="cmd_#boiler_anticipating_id#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" style="margin-left: 5px; margin-top: 2px;">
+ <div class="tooltips cmd cmd-widget " data-type="info" data-subtype="string" data-cmd_id="#boiler_anticipating_id#" data-cmd_uid="cmd_#boiler_anticipating_id#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" style="margin-right: 15px; margin-top: 2px;">
             <div class="content-xs">
                 <span class="cmdName">boiler_anticipating: </span> 
                 <strong class="state">#boiler_anticipating#</strong>
@@ -340,7 +326,7 @@
 </div> 
 
 <!-- *********************  -->
- <div class="tooltips cmd cmd-widget " data-type="info" data-subtype="string" data-cmd_id="#boiler_status_id#" data-cmd_uid="cmd_#boiler_status_id#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" style="margin-left: 5px; margin-top: 2px;">
+ <div class="tooltips cmd cmd-widget " data-type="info" data-subtype="string" data-cmd_id="#boiler_status_id#" data-cmd_uid="cmd_#boiler_status_id#" data-version="dashboard" data-template="line" data-eqlogic_id="#id#" style="margin-left: 15px; margin-top: 2px;">
             <div class="content-xs">
                 <span class="cmdName">boiler_status: </span> 
                 <strong class="state">#boiler_status#</strong>
@@ -624,18 +610,14 @@ $('.eqLogic[data-eqLogic_uid=#uid#] .natimepicker').off('click').on('click', fun
 					});
 
 					$(".eqLogic[data-eqLogic_uid=#uid#] .slidermod").on('slidestop', function (event,ui) {
-						console.log("slidestop " );
-                      	if(ui.value != parseInt(setmodeStep.indexOf('#home_modetech#')) ){
+						if(ui.value != parseInt(setmodeStep.indexOf('#home_modetech#')) ){
 							var listItems = $( ".eqLogic[data-eqLogic_uid=#uid#] .btn_boilmod" ).slice( 1 );
                             i= $( ".eqLogic[data-eqLogic_uid=#uid#] .btn_boilmod" ).index( listItems );
                             cl= $( ".eqLogic[data-eqLogic_uid=#uid#] .btn_boilmod" ).slice(ui.value).attr('data-cmd_id');
-                            console.log("i: "+ i );
-                          	console.log("cl: "+ cl );
-                          
-                          //jeedom.cmd.execute({id: '#setsysmode_id#', value: {'message': ui.value+1}});
+                            //jeedom.cmd.execute({id: '#setsysmode_id#', value: {'message': ui.value+1}});
                                   // jeedom.cmd.execute({id: $(this).attr('data-cmd_id')});
-                         }
-                    });
+                                }
+                            });
 
 
 
