@@ -333,15 +333,17 @@ class naEnergie extends eqLogic {
           	foreach($home['modules'] as $module) {//foreach3
 				$type=null;
                 //if (in_array($module['id'], $room['module_ids'] )){
-                if($module['type'] === "NAPlug"){
+                $nbmodules=count($home['modules']);
+              	if($module['type'] === "NAPlug"){
                     $plug_id=$module['id'];
                     $plug_name=$module['name'];
                     $plug_modules=$module['modules_bridged'];
-                    break;
+                  	break;
                 }
+              	log::add('naEnergie', 'debug', '  ******'.__FUNCTION__ .' nbmodules: '.$nbmodules);
             }
           	$eqHome = eqLogic::byLogicalId($homeid, 'naEnergie');
-			if (!is_object($eqHome) || $eqHome->getLogicalId() != $homeid ) {// 
+			if ((!is_object($eqHome) || $eqHome->getLogicalId() != $homeid) && $nbmodules > 2) {// 
 						$eqHome = new naEnergie();
 						$eqHome->setIsEnable(1);
 						$eqHome->setIsVisible(1);
@@ -356,7 +358,7 @@ class naEnergie extends eqLogic {
 						$eqHome->setConfiguration('UpNumberFailed', 0);
                       	$eqHome->setConfiguration('type', 'home');//$eqHome->setConfiguration('roomName', $roomName);
                       	$eqHome->setConfiguration('parentName', $homeName);
-						$eqHome->setConfiguration('roomType', 'Home');
+						$eqHome->setConfiguration('NAtype', 'Home');
 						//$eqHome->setConfiguration('modules', $modules);
                       	$eqHome->setConfiguration('eqtuile', 'default');
 						$eqHome->setConfiguration('spm_duaration',$home['therm_setpoint_default_duration']);
@@ -713,8 +715,7 @@ class naEnergie extends eqLogic {
           	//$eqLogic->batteryStatus(25);
 			if(count($eqmodules) > 1){
 				foreach ($eqmodules as $key=>$eqmodule) {
-              		//$eqbatterie[]=self::batteryStrtoTaux($eqmodule['battery_state']);
-                  	$eqbatterie[]=self::getBattery($eqmodule['battery_level'],$eqmodule['type']);
+              		$eqbatterie[]=self::getBattery($eqmodule['battery_level'],$eqmodule['type']);
                   	$eqmodules[$key]['battery_percent']=self::getBattery($eqmodule['battery_level'],$eqmodule['type']);
                   	
                   	$eqrfstatus[]=$eqmodule['rf_strength'];
@@ -774,11 +775,15 @@ class naEnergie extends eqLogic {
       	$homeCmdi=array('home_modetech', 'listplanning', 'nowplanning', 'nowplanid', 'boiler_anticipating', 
                         'boiler_status', 'statusname', 'wifistatus', 'hg_temp', 'away_temp');
       	foreach($eqLogics as $eqLogic) {
-        	$eqLog_id=$eqLogic->getLogicalId();
+        	if (!$eqLogic->getIsEnable() || $eqLogic->getConfiguration('type')=='home') {
+                        //log::add('naEnergie','debug', '	'.__FUNCTION__ . '****  break '.$eqLogic->getIsEnable());
+            	continue;
+            }
+          	$eqLog_id=$eqLogic->getLogicalId();
 			list($roomid, $homeid) = explode('|', $eqLog_id);
           		
 				log::add('naEnergie','debug','home-cmds for: '.$eqLogic->getName().' - '.$eqLog_id.PHP_EOL);  
-			if (!array_key_exists( $homeid, $global)) {
+   			if (!array_key_exists( $homeid, $global)) {
               //continue;
             }
           	foreach ($homeCmdi as $cmdi) {
@@ -2425,293 +2430,6 @@ class naEnergieCmd extends cmd {
 }
 
 
-/* * ***************************  class naEnergieGraph  ********************************* */
-/*
-class  naEnergieGraph extends naEnergie {
-	
-	public static function cronExt() {	
-		 //ori ok
-		log::add('naEnergie', 'debug', 'Starting '.__FUNCTION__ .'********');
-		$path = dirname(__FILE__) . '/../../data';
-		if (!is_dir($path)) {
-			 log::add('naEnergie', 'debug', 'data existe pas');
-			com_shell::execute(system::getCmdSudo() . 'mkdir ' . dirname(__FILE__) . '/../../data' . ' > /dev/null 2>&1;');
-			com_shell::execute(system::getCmdSudo() . 'chmod 777 -R ' . dirname(__FILE__) . '/../../data' . ' > /dev/null 2>&1;');
-			 log::add('naEnergie', 'debug', 'data crééé');
-		} else {
-			 log::add('naEnergie', 'debug', 'data existe ');
-			com_shell::execute(system::getCmdSudo() . 'chmod 777 -R ' . dirname(__FILE__) . '/../../data' . ' > /dev/null 2>&1;');
-			 log::add('naEnergie', 'debug', 'droit sudo');
-		}		  
-		
-		
-		$client = self::getClient(__FUNCTION__);
-		//$datas = naEnergie::$_data;
-	
-		$files = array('year','month');
-		$scale = array('1month','1day');
-		$k=0;
-		foreach ($files as $file) {
-			$datas = array();
-			$eqLogics = eqLogic::byType('naEnergie', true);
-			$j = 0;
-			foreach ( $eqLogics as $eqLogic) {
-				if ($eqLogic->getIsEnable()) {
-					for ($i = 0; $i <= 3 ; $i++) {
-						$year = date('Y') - $i;
-						$begin = new DateTime('first day of January ' . $year);
-						$begin = $begin->getTimestamp();
-						$end = new DateTime('last day of December ' . $year);
-						$end = $end->getTimestamp() + 23*3600;	
-						
-						$type = $eqLogic->getConfiguration('type');
-						$md=$eqLogic->getConfiguration('main_deviceId');
-						$datas[$j]['Data_date']=date('d-m-Y H:i:s');
-						$datas[$j]['name'] = $eqLogic->getName() ;
-						$datas[$j]['type'] = $type;
-						switch($type) {
-							case 'NAMain'://device WS
-								$datatype='Temperature,Humidity,Pressure,Noise,CO2,max_temp,min_temp,max_hum,min_hum,date_max_temp,date_min_temp,date_max_hum,date_min_hum';
-								$measure = $client->_getMeasure($eqLogic->getLogicalId(),NULL, $scale[$k],$datatype , $begin, $end, 1024, FALSE, FALSE);
-								$datas[$j]['device_id'] = $eqLogic->getLogicalId() ;
-								$datas[$j]['module_id'] = $eqLogic->getLogicalId() ;
-								$datas[$j]['datatype'] = $datatype;
-								break;
-							case 'NAModule1'://module ext WS
-								$datatype='Temperature,Humidity,max_temp,min_temp,max_hum,min_hum,date_max_temp,date_min_temp,date_max_hum,date_min_hum';
-								$measure = $client->_getMeasure($eqLogic->getConfiguration('main_deviceId'), $eqLogic->getLogicalId(), $scale[$k],$datatype, $begin, $end, 1024, FALSE, FALSE);
-								$datas[$j]['device_id'] = $eqLogic->getConfiguration('main_deviceId');
-								$datas[$j]['module_id'] = $eqLogic->getLogicalId();
-								
-								$datas[$j]['datatype'] = $datatype;
-								break;
-							case 'NAModule4'://Indoor Module sup
-								$datatype='Temperature,Humidity,CO2,max_temp,min_temp,max_hum,min_hum,date_max_temp,date_min_temp,date_max_hum,date_min_hum';
-								$measure = $client->_getMeasure($eqLogic->getConfiguration('main_deviceId'), $eqLogic->getLogicalId(), $scale[$k],$datatype, $begin, $end, 1024, FALSE, FALSE);
-								$datas[$j]['device_id'] = $eqLogic->getConfiguration('main_deviceId');
-								$datas[$j]['module_id'] = $eqLogic->getLogicalId();
-								$datas[$j]['datatype'] = $datatype;
-								break;
-							case 'NAModule2'://Wind Sensor
-								$datatype='WindStrength,WindAngle,GustStrength,GustAngle,date_max_gust';
-								$measure = $client->_getMeasure($eqLogic->getConfiguration('main_deviceId'), $eqLogic->getLogicalId(), $scale[$k],$datatype, $begin, $end, 1024, FALSE, FALSE);
-								$datas[$j]['device_id'] = $eqLogic->getConfiguration('main_deviceId');
-								$datas[$j]['module_id'] = $eqLogic->getLogicalId();
-								$datas[$j]['datatype'] = $datatype;
-								break;
-							
-							case 'NAModule3'://Rain Gauge
-								$datatype='Rain,sum_rain';
-								$measure = $client->_getMeasure($eqLogic->getConfiguration('main_deviceId'), $eqLogic->getLogicalId(), $scale[$k],$datatype, $begin, $end, 1024, FALSE, FALSE);
-								$datas[$j]['device_id'] = $eqLogic->getConfiguration('main_deviceId');
-								$datas[$j]['module_id'] = $eqLogic->getLogicalId();
-								$datas[$j]['datatype'] = $datatype;
-								break;
-							case 'NATherm1'://module TH
-								$clientTh = self::getClient(__FUNCTION__,'NATherm1');
-								$datatype='Temperature,Sp_Temperature,BoilerOn,BoilerOff,date_max_temp,max_temp,min_temp,date_min_temp';
-								$measure = $clientTh->_getMeasure($eqLogic->getConfiguration('main_deviceId'), $eqLogic->getLogicalId(), $scale[$k],$datatype, $begin, $end, 1024, FALSE, FALSE);
-								$datas[$j]['device_id'] = $eqLogic->getConfiguration('main_deviceId');
-								$datas[$j]['module_id'] = $eqLogic->getLogicalId();
-								$datas[$j]['datatype'] = $datatype;
-								break;	
-						} //Fin switch($type)
-						
-							if ($measure != null) {
-								$datas[$j]['year'][$year] = $measure;
-							} else {
-								break;
-							}
-							//log::add('naEnergie','debug', 'cron_datats '.$type.'|'.json_encode($datas));
-							
-							
-					}//Fin for
-					$j++;	
-				
-				}//Fin if ($eqLogic->getIsEnable()) {
-			}//Fin foreach ( $eqLogics as $eqLogic)
-			
-			file_put_contents(dirname(__FILE__) . '/../../data/' . $file .'.json', json_encode($datas));	
-			$k++;
-			}// fin foreach ($files as $file)		
-			log::add('naEnergie', 'debug', 'Fin '.__FUNCTION__ .'********');
-		 		  
-      }
-///////////////////////////////	 
-	
-	////////////////////////////////					
-	public function getDataGraph($device_id, $module_id, $scale, $type, $date_begin, $date_end, $limit, $subtitle, $real_time) {
-		log::add('naEnergie', 'debug', '******** Starting '.__FUNCTION__ .'********');
-		$client = self::getClient("getDataGr");
-		$datas = naEnergie::$_data;
-		
-		if ($module_id == 0) {
-			$module_id = NULL;
-		}
-		log::add('naEnergie','debug', 'f getDataGraph scale: '.$scale);
-		log::add('naEnergie','debug', 'f getDataGraph type: '.$type);
-		log::add('naEnergie','debug', 'f getDataGraph date_begin: '.$date_begin);
-		log::add('naEnergie','debug', 'f getDataGraph date_end: '.$date_end);
-		log::add('naEnergie','debug', 'f getDataGraph limit: '.$limit);
-		//$device_id.','.$module_id.','.$scale.','.$type.','.$date_begin.','.$date_end.','.$limit.','.'FALSE'.','.'FALSE'
-		
-		
-		$data_module = array();
-		$data_module['type_graph'] = $subtitle;
-		
-		//type device
-		$device = eqLogic::byLogicalId($device_id,'naEnergie');
-		if (is_object($device) && $device_id===$module_id || $module_id===NULL){
-			
-			$devicetype = $device->getConfiguration('type');
-			$measure = $client->_getMeasure($device_id, $module_id, $scale, $type, $date_begin, $date_end, $limit, FALSE, FALSE);
-			log::add('naEnergie','debug', 'f getDataGraph measure device: '.$device_id.'|'.$module_id .': '. json_encode($measure, true));
-		
-			$data_module['name_module'] = $device->getName();
-			$data_module['type']=$device->getConfiguration('type');
-			$data_module['infos'] = json_encode($measure); 
-			//log::add('naEnergie','debug', 'f getDataGraph device type: '.$device->getConfiguration('type'));
-				//$eqLogic->setConfiguration('mesures',$statmodule['dashboard_data']);
-			$data_module['temperature_module'] = $device->getConfiguration('dash_data')['Temperature'];
-			$data_module['Humidity_module'] = $device->getConfiguration('dash_data')['Humidity'];		
-			$data_module['Pressure_module'] = $device->getConfiguration('dash_data')['Pressure'];		
-			$data_module['Noise_module'] = $device->getConfiguration('dash_data')['Noise'];		
-			$data_module['CO2_module'] = $device->getConfiguration('dash_data')['CO2'];
-			$data_module['max_temp_module'] = $device->getConfiguration('dash_data')['max_temp'];	
-			$data_module['min_temp_module'] = $device->getConfiguration('dash_data')['min_temp'];
-			$data_module['wifi_status'] = self::getWifi($device->getConfiguration('wifi_status'));
-		}//type module					
-		elseif (is_object(eqLogic::byLogicalId($module_id,'naEnergie'))){ 
-			
-			$module = eqLogic::byLogicalId($module_id,'naEnergie');
-			$moduletype = $module->getConfiguration('type');
-			log::add('naEnergie','debug', 'f getDataGraph module type: '.$module->getConfiguration('type'));
-			$measure = $client->_getMeasure($device_id, $module_id, $scale, $type, $date_begin, $date_end, $limit, FALSE, FALSE);
-			log::add('naEnergie','debug', 'f getDataGraph measure: '.$device_id.'|'.$module_id .': '. json_encode($measure, true));
-			
-			$data_module['name_module'] = $module->getName();
-			$data_module['type'] = $module->getConfiguration('type');
-			$data_module['infos'] = json_encode($measure); 
-			
-			
-			switch($moduletype)
-			{	//Indoor device meteo
-				
-				case "NAMain":
-					log::add('naEnergie','debug', 'f getDataGraph module: '.$module->getConfiguration('type'));
-				
-					$data_module['temperature_module'] = $module->getConfiguration('dash_data')['Temperature'];
-					$data_module['Humidity_module'] = $module->getConfiguration('dash_data')['Humidity'];		
-					$data_module['Pressure_module'] =$module->getConfiguration('dash_data')['Pressure'];		
-					$data_module['Noise_module'] = $module->getConfiguration('dash_data')['Noise'];		
-					$data_module['CO2_module'] = $module->getConfiguration('dash_data')['CO2'];	
-					$data_module['max_temp_module'] = $module->getConfiguration('dash_data')['max_temp'];	
-					$data_module['min_temp_module'] = $module->getConfiguration('dash_data')['min_temp'];
-					$data_module['wifi_status'] = self::getWifi($module->getConfiguration('wifi_status'));
-				break;
-				// Outdoor Module
-				
-				case "NAModule1": 
-					//log::add('naEnergie','debug', 'f getDataGraph module: '.$module->getConfiguration('type'));
-					$data_module['temperature_module'] = $module->getConfiguration('dash_data')['Temperature'];
-					$data_module['Humidity_module'] = $module->getConfiguration('dash_data')['Humidity'];
-					$data_module['max_temp_module'] = $module->getConfiguration('dash_data')['max_temp'];	
-					$data_module['min_temp_module'] = $module->getConfiguration('dash_data')['min_temp'];
-					$data_module['battery_percent'] = self::getBattery($module->getConfiguration('type'),$module->getConfiguration('battery_percent'));
-				;break;
-				
-				//Wind Sensor : WindStrength,WindAngle,Guststrength,GustAngle,WindHistoric
-				case "NAModule2": 
-					$data_module['WindStrength_module'] = $module->getConfiguration('dash_data')['WindStrength'];	
-					$data_module['WindAngle_module'] = $module->getConfiguration('dash_data')['WindAngle'];	
-					$data_module['Guststrength_module'] = $module->getConfiguration('dash_data')['Guststrength'];
-					$data_module['GustAngle_module'] = $module->getConfiguration('dash_data')['GustAngle'];
-					$data_module['WindHistoric_module'] = $module->getConfiguration('dash_data')['WindHistoric'];
-					$data_module['battery_percent'] = self::getBattery($module->getConfiguration('type'),$module->getConfiguration('battery_percent'));
-					;break;
-		
-				//Rain Gauge Rain,sum_rain_1,sum_rain_24
-				case "NAModule3": 
-					//log::add('naEnergie','debug', 'f getDataGraph module: '.$module->getConfiguration('type'));
-					$data_module['Rain_module'] = $module->getConfiguration('dash_data')['Rain'];
-					$data_module['sum_rain_1_module'] = $module->getConfiguration('dash_data')['sum_rain_1'];
-					$data_module['sum_rain_24_module'] = $module->getConfiguration('dash_data')['sum_rain_24'];
-					$data_module['battery_percent'] = self::getBattery($module->getConfiguration('type'),$module->getConfiguration('battery_percent'));
-					
-					break;
-				
-				//Indoor Module
-				case "NAModule4": 
-					//log::add('naEnergie','debug', 'f getDataGraph module: '.$module->getConfiguration('type'));
-					$data_module['temperature_module'] = $module->getConfiguration('dash_data')['Temperature'];
-					$data_module['Humidity_module'] = $module->getConfiguration('dash_data')['Humidity'];		
-					//$data_module['Pressure_module'] = $module->getConfiguration('Pressure'];		
-					//$data_module['Noise_module'] = $module->getConfiguration('Noise');		
-					$data_module['CO2_module'] = $module->getConfiguration('dash_data')['CO2'];	
-					$data_module['max_temp_module'] = $module->getConfiguration('dash_data')['max_temp'];	
-					$data_module['min_temp_module'] = $module->getConfiguration('dash_data')['min_temp'];
-					$data_module['wifi_status'] = self::getWifi($module->getConfiguration('wifi_status'));
-					$data_module['battery_percent'] = self::getBattery($module->getConfiguration('type'),$module->getConfiguration('battery_percent'));
-						
-					break;
-				//Indoor Module
-				case "NATherm1": 
-					//log::add('naEnergie','debug', 'f getDataGraph module: '.$module->getConfiguration('type'));
-					$data_module['temperature_module'] = $module->getConfiguration('dash_data')['Temperature'];
-					$data_module['cons_module'] = $module->getConfiguration('dash_data')['Sp_Temperature'];	
-					$data_module['boilerOn'] = $module->getConfiguration('dash_data')['BoilerOn'];
-					$data_module['boilerOff'] = $module->getConfiguration('dash_data')['BoilerOff'];
-					
-					$data_module['min_temp_module'] = $module->getConfiguration('dash_data')['min_temp'];
-					$data_module['max_temp_module'] = $module->getConfiguration('dash_data')['max_temp'];
-					$data_module['sum_boiler_on'] = $module->getConfiguration('dash_data')['sum_boiler_on'];
-					$data_module['sum_boiler_off'] = $module->getConfiguration('dash_data')['sum_boiler_off'];
-					
-					$data_module['rf_status'] = $module->getConfiguration('rf_status');
-					$data_module['battery_percent'] = self::getBattery($module->getConfiguration('type'),$module->getConfiguration('battery_percent'));
-					$data_module['wifi_status'] = self::getWifi($module->getConfiguration('wifi_status'));
-					break;
-				
-				//Indoor Module
-				case "NAPlug": 
-					return $type = 'module_rel';
-					break;
-			}	
-			
-			
-			
-			
-			
-			$data_module['rf_status'] = self::getSignal($module->getConfiguration('rf_status'));
-			//if (array_key_exists('wifi_status', $data_module)) {
-				//log::add('naEnergie','debug', 'conf: ' . $module->getConfiguration('rf_status'));
-			//}
-			
-		} 
-		
-		
-		log::add('naEnergie','debug', 'f getDataGraph data_module: '.json_encode($data_module));
-		log::add('naEnergie', 'debug', 'Fin '.__FUNCTION__ .'********');
-		return($data_module);	
-	}
 
-	///////////////////////////////		
-	public static function treeById($_eqType_name) {
-        $values = array(
-            'eqType_name' => $_eqType_name
-        );
-        $sql = 'SELECT *
-                FROM eqLogic
-                WHERE eqType_name=:eqType_name
-				';
-        $results = DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL);
-        $return = array();
-        foreach ($results as $result) {
-            $return[] = eqLogic::byId($result['id']);
-        }
-        return $return;
-    }
-}//Fin class  naEnergieGraph extends naEnergie {
-*/
 
 ?>
