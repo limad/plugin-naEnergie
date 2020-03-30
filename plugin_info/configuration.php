@@ -68,13 +68,51 @@ if (!isConnect()) {
             </div>
     </div>
     -->
-      
+    
+     <!--        --> 
     <div class="form-group">
         <label class="col-sm-4 control-label">{{Synchroniser}}</label>
         <div class="col-sm-7">
         <a class="btn btn-success" id="bt_syncWithStation"><i class='fas fa-refresh'></i> {{Synchroniser mes équipements}}</a>
         </div>
     </div>
+    <?php
+	    	$hasweather = false;
+	    	$hasthermostat = false;
+	    	$haswelcome = false;
+		try {
+			$hasweather = plugin::byId('netatmoWeather');
+			$hasthermostat = plugin::byId('netatmoThermostat');
+			$haswelcome = plugin::byId('netatmoWelcome');
+		} catch (Exception $e) {
+		}
+		if (($hasthermostat && $hasthermostat->isActive()) || ($haswelcome && $haswelcome->isActive())|| ($hasweather && $hasweather->isActive())){
+			echo '<div class="form-group">
+			<label class="col-sm-4 control-label">{{Importer les infos depuis: }}</label>
+				<div class="col-sm-8">';
+			////
+                    if (($hasweather && $hasweather->isActive())){
+                        echo '<a class="btn btn-default" id="bt_getFromWeather"><i class="fas fa-random"></i> {{Netatmo Station}}</a> ';
+                    }
+
+                    ////
+                    if (($haswelcome && $haswelcome->isActive())){
+                        echo '<a class="btn btn-default" id="bt_getFromWelcome"><i class="fas fa-random"></i> {{Netatmo Welcome}}</a> ';
+                    }
+                    ////
+                    if (($hasthermostat && $hasthermostat->isActive())){
+                        echo '<a class="btn btn-default" id="bt_getFromThermostat"><i class="fas fa-random"></i> {{Netatmo Thermostat}}</a> ';
+                    }
+                  echo '</div>';
+			echo '</div>';
+		}
+    ?>
+    
+    
+    
+    
+    
+    
     </div> <!--fin col-->
    <div class="col-md-6 col-sm-6">
 	
@@ -148,38 +186,7 @@ if (!isConnect()) {
 </div>	 <!--row-->
 	
 	
-	<?php
-	    	$hasweather = false;
-	    	$hasthermostat = false;
-	    	$haswelcome = false;
-		try {
-			$hasweather = plugin::byId('netatmoWeather');
-			$hasthermostat = plugin::byId('netatmoThermostat');
-			$haswelcome = plugin::byId('netatmoWelcome');
-		} catch (Exception $e) {
-		}
-		if (($hasthermostat && $hasthermostat->isActive()) || ($haswelcome && $haswelcome->isActive())|| ($hasweather && $hasweather->isActive())){
-			echo '<div class="form-group">
-			<label class="col-sm-3 control-label">{{Importer les infos depuis: }}</label>
-			<div class="col-sm-2">';
-			////
-			if (($hasweather && $hasweather->isActive())){
-				echo '<a class="btn btn-default" id="bt_getFromWeather"><i class="fas fa-random"></i> {{Netatmo Station}}</a>';
-			}
-			echo '</div>';
-			////
-			if (($haswelcome && $haswelcome->isActive())){
-				echo '<a class="btn btn-default" id="bt_getFromWelcome"><i class="fas fa-random"></i> {{Netatmo Welcome}}</a>
-					';
-			}
-			////
-			if (($hasthermostat && $hasthermostat->isActive())){
-				echo '<a class="btn btn-default" id="bt_getFromThermostat"><i class="fas fa-random"></i> {{Netatmo Thermostat}}</a>
-					';
-			}
-			echo '</div>';
-		}
-    ?>
+	
     
     
     
