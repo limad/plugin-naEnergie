@@ -1,887 +1,459 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
-  <meta name="description" content="Jeedom logiciel de domotique innovant" />
-  <meta property="og:title" content="Jeedom" />
-  <meta property="og:type" content="Domotique" />
-  <meta property="og:url" content="https://www.jeedom.com/fr" />
-  <meta property="og:image" content="https://www.jeedom.com/logo.png" />
-  <link rel="icon" href="../favicon.ico" />
-  <title>Jeedom</title>
-  
-  <!-- CSS  -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="../css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-  <link href="../css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-  <link href="../font/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-  <!-- Matomo -->
-  <script type="text/javascript">
-  var _paq = window._paq || [];
-  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-  _paq.push(["setDomains", ["*.jeedom.com","*.www.jeedom.com"]]);
-  _paq.push(['trackPageView']);
-  _paq.push(['enableLinkTracking']);
-  (function() {
-    var u="//matomo.jeedom.com/";
-    _paq.push(['setTrackerUrl', u+'matomo.php']);
-    _paq.push(['setSiteId', '4']);
-    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-  })();
-</script>
-<!-- End Matomo Code -->
-</head>
-<body>
-  <div class="navbar-fixed">
-    <nav class="white" role="navigation">
-      <div class="nav-wrapper container">
-        <a id="logo-container" href="https://www.jeedom.com/fr" class="brand-logo center"><img src="../logo.png" style="height:50px;margin-top:5px;"></a>
-        <ul class="left hide-on-med-and-down">
-          <li class="active"><a href="index.html">Accueil</a></li>
-          <li><a href="soft.html">Logiciel</a></li>
-          <li><a href="box.html">Box</a></li>
-          <li><a href="pro.html">Professionnel</a></li>
-          <li><a href="dev.html">Développer</a></li>
-        </ul>
-        <ul class="right hide-on-med-and-down">
-          <li class="active"><a href="https://www.jeedom.com">Site</a></li>
-          <li><a href="https://blog.jeedom.com">Blog</a></li>
-          <li><a href="https://community.jeedom.com">Community</a></li>
-          <li><a href="https://market.jeedom.com">Market</a></li>
-          <li><a href="https://doc.jeedom.com">Doc</a></li>
-        </ul>
-        
-        <ul id="nav-mobile" class="side-nav">
-          <li class="active"><a href="index.html">Accueil</a></li>
-          <li><a href="soft.html">Logiciel</a></li>
-          <li><a href="box.html">Box</a></li>
-          <li><a href="pro.html">Professionnel</a></li>
-          <li><a href="dev.html">Développer</a></li>
-          <li><a href="https://blog.jeedom.com">Blog</a></li>
-          <li><a href="https://community.jeedom.com">Community</a></li>
-          <li><a href="https://market.jeedom.com">Market</a></li>
-          <li><a href="https://doc.jeedom.com">Doc</a></li>
-        </ul>
-        <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons" style="color:#96c927">menu</i></a>
-      </div>
-    </nav>
-  </div>
-  
-  <div class="parallax-container valign-wrapper" style="height:500px;">
-    
-    <div class="lang">
-      <div class="lang2">
-        <img src="../img/bt_ico_lang.png" height="70px" width="70px">
-      </div>
-      <div class="lang3">
-        <div class="select">
-          <select class="browser-default" onChange="window.open(this.options[this.selectedIndex].value,'_top')">
-            <option value="../fr/index.html" selected>Français</option>
-            <option value="../en/index.html">English</option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <!--
-    <a href="https://jeedom.fr/shop"><div class="shop">
-    <img src="../img/bt_ico_shop.png" height="70px" width="70px">
-  </div></a>
--->
+ <!DOCTYPE html>
+ <html>
+ <head>
+ 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+ 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+ 	<meta name="description" content="Documentation du logiciel de domotique Jeedom" />
+ 	<meta property="og:title" content="Jeedom" />
+ 	<meta property="og:type" content="Domotique" />
+ 	<meta property="og:url" content="https://doc.jeedom.com" />
+ 	<meta property="og:image" content="https://doc.jeedom.com/img/logo.png" />
+ 	<link rel="icon" href="favicon.ico"/>
+ 	<title>Documentation Jeedom</title>
 
-<div class="section no-pad-bot">
-  <div class="container">
-    <div class="row center">
-      <h5 class="header col s12 thin texteimggros" style="color:black;font-weight:thin;">Jeedom</h5>
-      <h5 class="header col s12 light texteimgpetit" style="color:black;font-weight:bold;">La domotique innovante</h5>
-      <h6 class="header col s12 light" style="color:black;font-weight:bold;">&nbsp;</h6>
-      <a class="waves-effect waves-light btn" style="background-color:#96c927" href="soft.html#obtenir">Obtenir Jeedom</a>
-    </div>
-  </div>
-</div>
-<div class="parallax"><img src="../background/background0.jpg" alt="Unsplashed background img 2"></div>
-</div>
+ 	<!--Import Google Icon Font-->
+ 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+ 	<!--Import materialize.css-->
+ 	<link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+ 	<link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+ 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+ </head>
+ <body>
+ 	<div>
+ 		<nav>
+ 			<div class="nav-wrapper container">
+ 				<a id="logo-container" href="https://doc.jeedom.com" class="brand-logo center"><img src="img/logo.png" style="height:50px;margin-top:5px"></a>
+ 				<ul class="left hide-on-med-and-down">
+ 					<li>Jeedom Documentation</li>
+ 				</ul>
+ 				<a href="https://www.jeedom.com/doc" data-activates="nav-mobile" class="button-collapse btn-floating btn-large waves-effect waves-light jeedomcolorbg"><i class="material-icons">menu</i></a>
+ 				<ul class="right hide-on-med-and-down">
+ 					<li class="active"><a href="https://www.jeedom.com/site">Site</a></li>
+ 					<li><a href="https://blog.jeedom.com">Blog</a></li>
+ 					<li><a href="https://community.jeedom.com/">Community</a></li>
+ 					<li><a href="https://market.jeedom.com">Market</a></li>
+ 					<li><a href="https://doc.jeedom.com">Doc</a></li>
+ 				</ul>
+ 				<ul class="side-nav" id="nav-mobile">
+ 					<li><a href="https://blog.jeedom.com">Blog</a></li>
+ 					<li><a href="https://community.jeedom.com/">Community</a></li>
+ 					<li><a href="https://market.jeedom.com">Market</a></li>
+ 					<li><a href="https://doc.jeedom.com">Doc</a></li>
+ 				</ul>
+ 			</div>
+ 		</nav>
+ 	</div>
 
 
-<div class="container">
-  <div class="section">
-    
-    <!--   Icon Section   -->
-    <div class="row">
-      <div class="col s12 m3">
-        <div class="icon-block">
-          <h2 class="center" style="color:#96c927"><i class="fa fa-code"></i></h2>
-          <h5 class="center" style="color:black;font-weight:bold;font-size:17px;text-transform:uppercase;">Open Source</h5>
-          
-          <p class="light" style="text-align:justify;">Le logiciel Jeedom est Open Source, vous avez un accès total au logiciel qui gère votre domotique. Ceci est une garantie de transparence, mais également de longévité du logiciel et de votre installation.</p>
-        </div>
-      </div>
-      
-      <div class="col s12 m3">
-        <div class="icon-block">
-          <h2 class="center" style="color:#96c927"><i class="fa fa-rss"></i></h2>
-          <h5 class="center" style="color:black;font-weight:bold;font-size:17px;text-transform:uppercase;">Multi-Protocoles</h5>
-          
-          <p class="light" style="text-align:justify;">Jeedom est compatible avec de nombreux protocoles comme le Z-Wave, EnOcean, KNX, Legrand Bus, RFXcom, RTS, Chacon, Edisio, etc... Le système de plugins, via le Market Jeedom, permet de garantir une compatibilité avec de nombreux protocoles actuels et futurs.</p>
-        </div>
-      </div>
-      
-      <div class="col s12 m3">
-        <div class="icon-block">
-          <h2 class="center" style="color:#96c927"><i class="fa fa-sitemap"></i></h2>
-          <h5 class="center" style="color:black;font-weight:bold;font-size:17px;text-transform:uppercase;">Autonome</h5>
-          <p class="light" style="text-align:justify;">Jeedom ne nécessite pas l'accès à des serveurs extérieurs pour fonctionner. Toute votre installation se gère en local et vous êtes donc les seuls à y avoir accès pour vous garantir une confidentialité complète.</p>
-        </div>
-      </div>
-      
-      <div class="col s12 m3">
-        <div class="icon-block">
-          <h2 class="center" style="color:#96c927"><i class="fa fa-users"></i></h2>
-          <h5 class="center" style="color:black;font-weight:bold;font-size:17px;text-transform:uppercase;">Personnalisable</h5>
-          <p class="light" style="text-align:justify;">Grâce à sa flexibilité et aux nombreux paramètres de personnalisation, chaque utilisateur peut créer sa propre domotique Jeedom. A l'aide des widgets, des vues et des design, vous avez une totale liberté pour imaginer votre propre interface si vous le souhaitez.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-  <center><a class="waves-effect waves-light btn" style="background-color:#96c927" href="soft.html">Découvrir la domotique avec Jeedom</a></center>
-  <br><br>
-</div>
+ 	<div class="parallax-container valign-wrapper" style="height:375px">
+ 		<div class="parallax"><img src="img/background5.jpg"></div>
+ 		<div class="container">
+ 			<div class="section">
 
+ 				<div class="row">
+ 					<div class="input-field col s12 m3 offset-m11">
+ 						<br/>
+ 						<br/>
+ 						<select class="icons white-text" id="sel_language">
+ 							<option value="en_US" data-icon="img/flag/flag_en.png" class="left circle">English</option>
+ 							<option value="es_ES" data-icon="img/flag/flag_es.png" class="left circle">Español</option>
+ 							<option value="fr_FR" data-icon="img/flag/flag_fr.png" class="left circle" selected>Français</option>
+ 							<option value="de_DE" data-icon="img/flag/flag_de.png" class="left circle">Deutsch</option>
+ 						</select>
+ 						<label class="white-text" style="font-size:1.2rem"><i class="material-icons jeedomcolor circle" style="background-color:white;">language</i> Choisissez votre langue<br/><i style="font-size:1rem">Choose your language</i></label>
+ 					</div>
+ 				</div>
+ 			</div>
+ 		</div>
+ 	</div>
 
-<div class="parallax-container valign-wrapper" style="height:100px;">
-  <div class="section no-pad-bot">
-    <div class="container">
-      <div class="row right">
-        <h5 class="header col s12 thin texteimggros" style="color:white;font-weight:thin; text-align:right; font-size:40px; line-height:20px;">La domotique</h5>
-        <h5 class="header col s12 light texteimgpetit" style="color:white;font-weight:bold; text-align:right; font-size:35px;line-height:35px;">à votre image</h5>
-      </div>
-    </div>
-  </div>
-  <div class="parallax"><img src="../background/background6.jpg" alt="Unsplashed background img 3"></div>
-</div>
+ 	<div class="container" id="div_googleSearch">
+ 		<div>
+ 			<script>
+ 				(function() {
+ 					var cx = '007992890294536312136:75s0-jhumye';
+ 					var gcse = document.createElement('script');
+ 					gcse.type = 'text/javascript';
+ 					gcse.async = true;
+ 					gcse.src = 'https://cse.google.com/cse.js?cx=' + cx;
+ 					var s = document.getElementsByTagName('script')[0];
+ 					s.parentNode.insertBefore(gcse, s);
+ 				})();
+ 				window.onload = function(){
+ 					$('#gsc-i-id1').removeAttr( 'style' );
+ 					$('#gsc-i-id1').attr('style','width: 100%; padding: 0px; border: none; margin: -0.0625em 0px 0px; height: 1.25em; outline: none; background-image: url(https://www.google.com/cse/static/images/1x/googlelogo_lightgrey_46x16dp.png); text-indent: 48px; background-position: left center; background-repeat: no-repeat no-repeat;');
+ 					$('#gsc-i-id1').attr('placeholder','Rechercher sur la documentation');
+ 				};
+ 			</script>
+ 			<gcse:search></gcse:search>
+ 		</div>
+ 	</div>
 
-<div class="container">
-  <div class="section">
-    <div class="icon-block">
-      <h6 class="header col s12 light" style="color:black;font-weight:bold;">&nbsp;</h6>
-      <h2 class="center" style="color:#96c927"><i class="fa fa-random"></i></h2>
-      <h5 class="center">Hub des objets connectés</h5>
-      <center><p class="light">Jeedom vous permet de connecter entre eux tous vos objets intelligents.</p></center>
-      <h6 class="header col s12 light" style="color:black;font-weight:bold;">&nbsp;</h6>
-    </div>
-    <div class="slider">
-      <ul class="slides"
-      >
-      <li>
-        <img class="responsive-img" src="../object/Google-Home-Jeedom-1024x516.png">
-      </li>
-      <li>
-        <img class="responsive-img" src="../object/AmazonAlexa.jpg">
-      </li>
-      <li>
-        <img class="responsive-img" src="../object/netatmo.jpg"> <!-- random image -->
-        <div class="caption left-align" style="color:black;">
-          <h3>NETATMO</h3>
-        </div>
-      </li>
-      <li>
-        <img class="responsive-img" src="../object/sonos.jpg"> <!-- random image -->
-        <div class="caption right-align">
-          <h3>Sonos</h3>
-        </div>
-      </li>
-      <li>
-        <img class="responsive-img" src="../object/ikea.jpg"> <!-- random image -->
-        <div class="caption center-align">
-          <h3>IKEA Tradfri</h3>
-        </div>
-      </li>
-      <li>
-        <img class="responsive-img" src="../object/philips.jpg"> <!-- random image -->
-        <div class="caption right-align" style="color:black;">
-          <h3>Philips HUE</h3>
-        </div>
-      </li>
-      <li>
-        <img class="responsive-img" src="../object/xiaomi.jpg"> <!-- random image -->
-        <div class="caption right-align" style="color:black;">
-          <h3>XIAOMI</h3>
-        </div>
-      </li>
-      <li>
-        <img class="responsive-img" src="../object/other.jpg"> <!-- random image -->
-        <div class="caption left-align">
-          <h3>Et d'autres</h3>
-        </div>
-      </li>
-    </ul>
-  </div>
-  <br/><br/>
-  <center><p class="light">Jeedom est compatible avec de nombreux protocoles domotiques, API et objets connectés, périphériques multimédia, découvrez l'étendue de ses possibilités !</p></center>
-  <br/><br/>
-  <center><a class="waves-effect waves-light btn" style="background-color:#96c927" id="bt_showCompatibility">Liste des compatibilités</a></center>
-  <br/><br/>
-</div>
-</div>
+ 	<div class="container">
+ 		<div class="section">
+ 			<div class="row">
+ 				<div class="col s12">
+ 					<ul class="tabs">
+ 						<li class="tab col s2"><a class="active" href="#home">Accueil <i style="font-size: 0.8em;">Home</i></a></li>
+ 						<li class="tab col s2"><a href="#firststep">Pas à pas <i style="font-size: 0.8em;">Step by step</i></a></li>
+ 						<li class="tab col s2"><a href="#core">Core <i style="font-size: 0.8em;">Core</i></a></li>
+ 						<li class="tab col s2"><a href="#plugin">Plugins <i style="font-size: 0.8em;">Plugins</i></a></li>
+ 						<li class="tab col s2"><a href="#equipment">Equipements <i style="font-size: 0.8em;">Devices</i></a></li>
+ 						<li class="tab col s2"><a href="#developer">Développeurs <i style="font-size: 0.8em;">Developers</i></a></li>
+ 					</ul>
+ 				</div>
+ 				
+ 				<div id="home" class="col s12">
+ 					<div class="row">
+ 						<div class="col m6 s12">
+ 							<div class="card light-green lighten-1">
+ 								<div class="card-content white-text">
+ 									<span class="card-title">Accueil</span>
+ 									<p>Bienvenue sur le site de documentation Jeedom. Vous retrouverez toutes les documentations relatives à Jeedom.</br>
+ 									En espérant que vous y trouverez toutes les réponses à vos questions, nous vous souhaitons une bonne navigation.</p>
+ 									<span class="card-title"><i>Home</i></span>
+ 									<p><i>Welcome on Jeedom's documentation website. You will find all documentation related to Jeedom. We hope that you will find all the answers you need.</i></p>
+ 								</div>
+ 							</div>
+ 						</div>
+ 						<div class="col m6 s12">
+ 							<div class="card blue-grey lighten-1">
+ 								<div class="card-content white-text">
+ 									<span class="card-title">Actualité</span>
+ 									<p>L'équipe est heureuse de vous accueillir sur la nouvelle version du site de documentation.</br></p>
+ 									<span class="card-title"><i>News</i></span>
+ 									<p><i>The team is glad to welcome you on its new documentation's website.</i></p>
+ 								</div>
+ 							</div>
+ 						</div>
+ 					</div>	
+ 					<div class="card blue-grey lighten-5">
+ 						<div class="card-content black-text">
+ 							<span class="card-title"><center>Une équipe dynamique à votre service</center></span>
+ 							<center><p class="light">La société Jeedom SAS est composée des créateurs et de collaborateurs passionnés de domotique.</p></center>
+ 							<div class="row">
+ 								<div class="col m2 offset-m3">
+ 									<div class="row">
+ 										<div class="col s6">
+ 											<center><img src="img/team/loic.png" class="circle responsive-img"></center>
+ 										</div>
+ 										<div class="col s6">
+ 											<center><img src="img/team/mathieu.png" class="circle responsive-img"></center>
+ 										</div>
+ 									</div>
+ 									<center>Co-fondateurs</center>
+ 								</div>
+ 								<div class="col m1">
+ 									<div class="row">
+ 										<div class="col s6">
+ 										</div>
+ 									</div>
+ 								</div>
+ 								<div class="col m4">
+ 									<div class="row">
+ 										<div class="col s3">
+ 											<center><img src="img/team/thomas.png" class="circle responsive-img"></center>
+ 										</div>
+ 										<div class="col s3">
+ 											<center><img src="img/team/alexandre.png" class="circle responsive-img"></center>
+ 										</div>
+ 										<div class="col s3">
+ 											<center><img src="img/team/ludovic.jpg" class="circle responsive-img"></center>
+ 										</div>
+ 										<div class="col s3">
+ 											<center><img src="img/team/denis.png" class="circle responsive-img"></center>
+ 										</div>
+ 									</div>
+ 									<center>Collaborateurs</center>
+ 								</div>
+ 							</div>
+ 						</div>
+ 					</div>
+ 				</div>
 
+ 				<div id="firststep" class="col s12">
+ 					<div class="card blue-grey darken-1">
+ 						<div class="card-content white-text">
+ 							<span class="card-title">Pas à pas</span>
+ 							<p>Vous venez d'arriver ? Vous êtes un peu perdu ? Laissez-nous vous guider dans l'utilisation de Jeedom.</p></br>
+ 							<span class="card-title"><i>Step by step</i></span>
+ 							<p><i>You're new to Jeedom ? You seem to be lost ? Let us guide you in the use of Jeedom.</i></p>
+ 						</div>
+ 					</div>
+ 					<h4>Pas à pas</h4>
+ 					<div class="row" style="max-height:600px;overflow-y: auto;">
+ 						<div class="input-field col s12 m3" >
+ 							<ul class="collection" id='ul_listFirstStep0'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listFirstStep1'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listFirstStep2'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listFirstStep3'></ul>
+ 						</div>
+ 					</div>
+ 					<h4>Tutoriaux</h4>
+ 					<div class="row" style="max-height:600px;overflow-y: auto;">
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listHowTo0'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listHowTo1'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listHowTo2'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listHowTo3'></ul>
+ 						</div>
+ 					</div>
+ 					<h4>Tutoriaux avancés</h4>
+ 					<div class="row" style="max-height:600px;overflow-y: auto;">
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listHowToAdvance0'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listHowToAdvance1'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listHowToAdvance2'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listHowToAdvance3'></ul>
+ 						</div>
+ 					</div>
+ 				</div>
 
-<div class="container" id="div_compatibility" style="display:none;">
-  <div class="section">
-    <div class="row">
-      <div class="col s12 m4">
-        <table class="centered hoverable">
-          <thead>
-            <tr>
-              <th data-field="id">Nom</th>
-              <th data-field="name">Compatible</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=26" target="_blank">Alarme</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1839" target="_blank">Alarme DSC</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1810" target="_blank">Asterisk (call)</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=510" target="_blank">Alarme Somfy</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1909" target="_blank">Ambilight</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1107" target="_blank">Amplificateur Onkyo</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=264" target="_blank">Amplificateur Pioneer</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=228" target="_blank">Amplificateur Denon</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1492" target="_blank">APC (onduleur)</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1487" target="_blank">BBox Sagemcom</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1734" target="_blank">BBox TV</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=304" target="_blank">Belkin WeMo</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1244" target="_blank">Blink(1)</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1817" target="_blank">Bose Soundtouch</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1335" target="_blank">Boxio</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=70" target="_blank">Caméra IP</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1375" target="_blank">Connecteur Zibase</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=159" target="_blank">CurrentCost</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1794" target="_blank">Daikin controleur</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=342" target="_blank">Ecodevice</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1541" target="_blank">Edisio</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=174" target="_blank">EnOcean</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1668" target="_blank">Ewattch</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1018" target="_blank">Fitbit</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&p=market&type=plugin&name=freebox" target="_blank">Freebox</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=11" target="_blank">Google Agenda</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1081" target="_blank">Greenmomit</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1717" target="_blank">GreenIQ</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=16" target="_blank">GSM SMS</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1660" target="_blank">Huginn</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1909" target="_blank">Hyperion</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1705" target="_blank">IFTTT</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1129" target="_blank">Imperihome</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1194" target="_blank">IPX800 v2</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=344" target="_blank">IPX800 v3</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=305" target="_blank">Jabber</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="col s12 m4">
-        <table class="centered hoverable">
-          <thead>
-            <tr>
-              <th data-field="id">Nom</th>
-              <th data-field="name">Compatible</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=148" target="_blank">Karotz (via OpenKarotz)</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1732" target="_blank">KNX</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1398" target="_blank">Kodi/XBMC</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1012" target="_blank">Koubachi</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1821" target="_blank">LedTicker</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1806" target="_blank">Legrand Ecocompteur</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1241" target="_blank">LG TV</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1092" target="_blank">Lirc</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1076" target="_blank">Livebox</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1599" target="_blank">Logitech Harmony</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=249" target="_blank">Mir:ror</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=359" target="_blank">Mochad</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=301" target="_blank">Modbus</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1352" target="_blank">MQTT</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1696" target="_blank">Connecteur MyFox</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=999" target="_blank">MySensor</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=151" target="_blank">Nabaztag</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1840" target="_blank">Nagios Check</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=407" target="_blank">Nest</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1969" target="_blank">Netatmo thermostat</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1967" target="_blank">Netatmo Welcome</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=133" target="_blank">Netatmo Weather</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=319" target="_blank">Newtifry</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1506" target="_blank">Nimbus</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1580" target="_blank">Node-Red</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1243" target="_blank">Notify my Android</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1932" target="_blank">Numericable la box</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1932" target="_blank">Numéricable</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1500" target="_blank">NUT (onduleur)</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1418" target="_blank">Openlighting (DMX)</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1965" target="_blank">Openvpn</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1664" target="_blank">Orvibo</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1844" target="_blank">Owntracks</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1831" target="_blank">Pebble</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1200" target="_blank">Parrot Flower Power</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="col s12 m4">
-        <table class="centered hoverable">
-          <thead>
-            <tr>
-              <th data-field="id">Nom</th>
-              <th data-field="name">Compatible</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=190" target="_blank">Phillips Hue</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1119" target="_blank">Phillips TV</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1581" target="_blank">Playbulb</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1503" target="_blank">Porkfolio</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=134" target="_blank">Prowl</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=251" target="_blank">PushBullet</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=15" target="_blank">Pushing Box</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=299" target="_blank">Pushover</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1981" target="_blank">RFLink</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=52" target="_blank">RFXcom</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=373" target="_blank">Roomba</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1858" target="_blank">Remora</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=153" target="_blank">Samsung TV</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=17" target="_blank">S.A.R.A.H</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1689" target="_blank">Slack</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=284" target="_blank">SNMP</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1502" target="_blank">Sonos</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1710" target="_blank">SqueezeBox</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1303" target="_blank">Synology Surveillance Station</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1719" target="_blank">Connecteur Tahoma</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=260" target="_blank">Téléinfo</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=77" target="_blank">Thermostat</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1712" target="_blank">Thinking Cleaner</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1811" target="_blank">Torque</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1846" target="_blank">TV Orange</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1578" target="_blank">UniPi</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1336" target="_blank">WES</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1820" target="_blank">Waze</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=500" target="_blank">Wifilight</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1046" target="_blank">Wifipower</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1021" target="_blank">Withing</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1306" target="_blank">XBee ZB (S2)</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=6" target="_blank">xPL</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=185" target="_blank">Z-Wave</a></td>
-              <td><i class="fa fa-certificate" style="color:#96c927"></i></td>
-            </tr>
-            <tr>
-              <td><a href="https://jeedom.com/market/index.php?v=d&plugin_id=1375" target="_blank">Connecteur Zibase</a></td>
-              <td><i class="fas fa-check" style="color:#96c927"></i></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <p>&nbsp;</p>
-    <span style="font-size:0.8em;"><i class="fa fa-certificate" style="color:#96c927"></i> Plugins officiels (offerts avec le <a href="soft.html#service_pack">Service Pack Ultimate</a>)</span><br/>
-    <span style="font-size:0.8em;">Attention certains plugins sont développés par des tiers, l'équipe Jeedom ne pourra être tenue responsable en cas de mauvais fonctionnement</span>
-    <p>&nbsp;</p>
-  </div>
-</div>
+ 				<div id="core" class="col s12">
+ 					<div class="card blue-grey darken-1">
+ 						<div class="card-content white-text">
+ 							<span class="card-title">Général (Core)</span>
+ 							<p>Ici vous retrouverez toutes les docs relatives à l'utilisation du core de Jeedom.</p></br>
+ 							<span class="card-title"><i>Core</i></span>
+ 							<p><i>Here you will find all the documentations related to Jeedom's core.</i></p>
+ 						</div>
+ 					</div>
+ 					<div class="row" style="max-height:600px;overflow-y: auto;">
+ 						<div class="input-field col s12 m3" >
+ 							<ul class="collection" id='ul_listCore0'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listCore1'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listCore2'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listCore3'></ul>
+ 						</div>
+ 					</div>
+ 				</div>
 
+ 				<div id="plugin" class="col s12">
+ 					<div class="card blue-grey darken-1">
+ 						<div class="card-content white-text">
+ 							<span class="card-title">Plugins</span>
+ 							<p>Vous ne savez pas comment utiliser votre nouveau plugin ? Pas d'inquiétude vous êtes au bon endroit pour apprendre !</p></br>
+ 							<span class="card-title"><i>Plugins</i></span>
+ 							<p><i>You don't know how to use your new plugin ? Don't worry, you're in the right place !</i></p>
+ 						</div>
+ 					</div>
+ 					<ul class="tabs">
+ 						<li class="tab col s6"><a class="active" href="#plugin_officiel">Plugins officiels / <i>Official Plugins</i></a></li>
+ 						<li class="tab col s6"><a href="#plugin_thirdparty">Plugins tierces / <i>Documentation on third plugins</i></a></li>
+ 					</ul>
+ 					<div id="plugin_officiel" class="col s12">
+ 						<div class="row">
+ 							<div class="input-field col s12 m3" >
+ 								<ul class="collection" id='ul_listPlugin0'></ul>
+ 							</div>
+ 							<div class="input-field col s12 m3">
+ 								<ul class="collection" id='ul_listPlugin1'></ul>
+ 							</div>
+ 							<div class="input-field col s12 m3">
+ 								<ul class="collection" id='ul_listPlugin2'></ul>
+ 							</div>
+ 							<div class="input-field col s12 m3">
+ 								<ul class="collection" id='ul_listPlugin3'></ul>
+ 							</div>
+ 						</div>
+ 					</div>
+ 					<div id="plugin_thirdparty" class="col s12">
+ 						<div class="row">
+ 							<div class="input-field col s12 m3" >
+ 								<ul class="collection" id='ul_listPluginThird0'></ul>
+ 							</div>
+ 							<div class="input-field col s12 m3">
+ 								<ul class="collection" id='ul_listPluginThird1'></ul>
+ 							</div>
+ 							<div class="input-field col s12 m3">
+ 								<ul class="collection" id='ul_listPluginThird2'></ul>
+ 							</div>
+ 							<div class="input-field col s12 m3">
+ 								<ul class="collection" id='ul_listPluginThird3'></ul>
+ 							</div>
+ 						</div>
+ 					</div>
+ 				</div>
 
-<div class="parallax-container valign-wrapper">
-  <div class="section no-pad-bot">
-    <div class="container">
-      <div class="row left">
-        <h5 class="header col s12 thin texteimggros" style="color:white;font-weight:thin; font-size:40px; line-height:30px;">Des box domotiques</h5>
-        <h5 class="header col s12 light texteimgpetit" style="color:white;font-weight:bold; font-size:38px;">performantes</h5>
-      </div>
-    </div>
-  </div>
-  <div class="parallax"><img src="../background/background8.jpg" alt="Unsplashed background img 3"></div>
-</div>
+ 				<div id="equipment" class="col s12">
+ 					<div class="card blue-grey darken-1">
+ 						<div class="card-content white-text">
+ 							<span class="card-title">Equipements compatibles</span>
+ 							<p>Vous souhaitez acheter un nouvel équipement mais vous n'êtes pas sûr qu'il soit compatible Jeedom ! Vous voulez en savoir plus sur un équipement ? C'est là qu'il faut regarder.</p></br>
+ 							<span class="card-title"><i>Devices</i></span>
+ 							<p><i>You want to buy a new device, but you want to be sure of it's compatibility ! This is the right place to answer your questions.</i></p>
+ 						</div>
+ 					</div>
+ 					<h4>Zwave <div class="chip" style="position:relative;top:-7px;"><a id="bt_eqCompZwave" target="_blank">Voir les équipements compatibles</a></div></h4>
+ 					<div class="row" style="max-height:600px;overflow-y: auto;">
+ 						<div class="input-field col s12 m3" >
+ 							<ul class="collection" id='ul_listZwave0'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listZwave1'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listZwave2'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listZwave3'></ul>
+ 						</div>
+ 					</div>
+ 					<h4>EnOcean <div class="chip" style="position:relative;top:-7px;"><a id="bt_eqCompEnOcean" target="_blank">Voir les équipements compatibles</a></div></h4>
+ 					<div class="row" style="max-height:600px;overflow-y: auto;">
+ 						<div class="input-field col s12 m3" >
+ 							<ul class="collection" id='ul_listEnoCean0'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listEnoCean1'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listEnoCean2'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listEnoCean3'></ul>
+ 						</div>
+ 					</div>
+ 					<h4>Rfxcom <div class="chip" style="position:relative;top:-7px;"><a id="bt_eqCompRfxcom" target="_blank">Voir les équipements compatibles</a></div></h4>
+ 					<div class="row" style="max-height:600px;overflow-y: auto;">
+ 						<div class="input-field col s12 m3" >
+ 							<ul class="collection" id='ul_listRfxcom0'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listRfxcom1'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listRfxcom2'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listRfxcom3'></ul>
+ 						</div>
+ 					</div>
+ 					<h4>Edisio <div class="chip" style="position:relative;top:-7px;"><a id="bt_eqCompEdisio" target="_blank">Voir les équipements compatibles</a></div></h4>
+ 					<div class="row" style="max-height:600px;overflow-y: auto;">
+ 						<div class="input-field col s12 m3" >
+ 							<ul class="collection" id='ul_listEdisio0'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listEdisio1'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listEdisio2'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listEdisio3'></ul>
+ 						</div>
+ 					</div>
+ 					<h4>Blea <div class="chip" style="position:relative;top:-7px;"><a id="bt_eqCompBlea" target="_blank">Voir les équipements compatibles</a></div></h4>
+ 					<div class="row" style="max-height:600px;overflow-y: auto;">
+ 						<div class="input-field col s12 m3" >
+ 							<ul class="collection" id='ul_listBlea0'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listBlea1'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listBlea2'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listBlea3'></ul>
+ 						</div>
+ 					</div>
+ 					<h4>Caméra <div class="chip" style="position:relative;top:-7px;"><a id="bt_eqCompCamera" target="_blank">Voir les équipements compatibles</a></div></h4>
+ 					<div class="row" style="max-height:600px;overflow-y: auto;">
+ 						<div class="input-field col s12 m3" >
+ 							<ul class="collection" id='ul_listCamera0'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listCamera1'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listCamera2'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listCamera3'></ul>
+ 						</div>
+ 					</div>
+ 				</div>
 
-<div class="container">
-  <div class="section">
-    <br/><br/>
-    <!--   Icon Section   -->
-    <div class="row">
-      
-      
-      <div class="col s12 m6">
-        <div class="icon-block">
-          <center><img class="responsive-img" src="../box/smart-02.jpg"></center>
-          <h5 class="center" style="color:black;font-weight:thin;font-size:42px;">Jeedom Smart</h5>
-          <center>Un concentré de technologie pour rendre votre habitation intelligente</center><br/>
-        </div>
-      </div>
-      
-      <div class="col s12 m6">
-        <div class="icon-block">
-          <center><img class="responsive-img" src="../box/box_pro01.jpg"></center>
-          <h5 class="center" style="color:black;font-weight:thin;font-size:42px;">Jeedom Pro</h5>
-          <center>Réservée aux professionnels, installateurs et intégrateurs, ayant des besoins et des attentes spécifiques</center><br/>
-        </div>
-      </div>
-    </div>
-    <center><a class="waves-effect waves-light btn" style="background-color:#96c927" href="box.html">En savoir plus</a></center>
-  </div>
-</div>
-<br/><br/>
-<div class="parallax-container valign-wrapper">
-  <div class="section no-pad-bot">
-    <div class="container">
-      <div class="row left">
-        <h5 class="header col s12 light texteimgpetit" style="color:black;font-weight:bold; font-size:20px; line-height:5px;">Une communauté :</h5>
-        <h5 class="header col s12 thin texteimggros" style="color:black;font-weight:thin; font-size:50px; line-height:40px;">+ de 17840 membres</h5>
-        <h5 class="header col s12 light texteimgpetit" style="color:black;font-weight:bold; font-size:50px; line-height:40px;"> au service de tous</h5>
-      </div>
-    </div>
-  </div>
-  <div class="parallax"><img src="../background/background3.jpg" alt="Unsplashed background img 3"></div>
-</div>
+ 				<div id="developer" class="col s12">
+ 					<div class="card blue-grey darken-1">
+ 						<div class="card-content white-text">
+ 							<span class="card-title">Développeurs</span>
+ 							<p>Vous voulez développer un plugin pour Jeedom ? Vous êtes exactement là où il faut être !</p></br>
+ 							<span class="card-title"><i>Developers</i></span>
+ 							<p><i>You want to develop a plugin for Jeedom ? You are exactly where you need to be !</i></p>
+ 						</div>
+ 					</div>
+ 					Accès documentation du code du core <a href="phpdoc/index.html">ici</a><br/>
+ 					Documentation développement plugin <a href="https://jeedom.github.io/plugin-template/fr_FR/">ici</a><br/>
+ 					Plugin template <a href="https://github.com/jeedom/plugin-template">ici</a>
+      <div class="row" style="max-height:600px;overflow-y: auto;">
+ 						<div class="input-field col s12 m3" >
+ 							<ul class="collection" id='ul_listDev0'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listDev1'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listDev2'></ul>
+ 						</div>
+ 						<div class="input-field col s12 m3">
+ 							<ul class="collection" id='ul_listDev3'></ul>
+ 						</div>
+ 					</div>
+ 				</div>
+ 			</div>
+ 		</div>
+ 	</div>
+ 	<footer class="page-footer" style="background-color:#454449">
+ 		<div class="container">
+ 			<div class="row">
+ 				<div class="col l6 s12">
+ 					<p class="grey-text text-lighten-5">
+ 						Sources Jeedom : <a href="https://github.com/jeedom" target="_blank"><i class="fa fa-github"></i> Github</a><br/>
+ 						© JEEDOM SAS. Tous droits réservés. Contact commercial : <a href="mailto:contact@jeedom.com">contact@jeedom.com</a>
+ 					</p>
+ 				</div>
+ 				<div class="col l3 s12 offset-l3">
+ 					<h5 class="white-text"><i class="material-icons">person_pin</i> Social</h5>
+ 					<ul>
+ 						<li><a class="white-text" href="https://plus.google.com/communities/104294874486935347448"><i class="fa fa-google-plus"></i> Google+</a></li>
+ 						<li><a class="white-text" href="https://www.facebook.com/pages/Jeedom/249936178537210"><i class="fa fa-facebook"></i> Facebook</a></li>
+ 						<li><a class="white-text" href="https://twitter.com/Jeedom_domotic"><i class="fa fa-twitter"></i> Twitter</a></li>
+ 						<li><a class="white-text" href="https://www.youtube.com/channel/UC5F6SKlzcjoNvHhBk0agKVw"><i class="fa fa-youtube"></i> Youtube</a></li>
+ 					</ul>
+ 				</div>
+ 			</div>
+ 		</div>
+ 	</footer>
 
-<br/> <br/>
-<div class="container">
-  <div class="section">
-    <h3 class="center">Une équipe dynamique à votre service</h3>
-    <center><p class="light">La société Jeedom SAS est composée des créateurs et de collaborateurs passionnés de domotique.</p></center>
-    
-    
-    <div class="row">
-      <div class="col m2 offset-m3">
-        <div class="row">
-          <div class="col s6">
-            <center><img src="../team/loic.png" class="circle responsive-img"><center>
-            </div>
-            <div class="col s6">
-              <center><img src="../team/mathieu.png" class="circle responsive-img"><center>
-              </div>
-            </div>
-            <center>Co-fondateurs</center>
-          </div>
-          <div class="col m1">
-            <div class="row">
-              <div class="col s6">
-                <center><center>
-                </div>
-              </div>
-            </div>
-            <div class="col m4">
-              <div class="row">
-                <div class="col s3">
-                  <center><img src="../team/thomas.png" class="circle responsive-img"><center>
-                  </div>
-                  <div class="col s3">
-                    <center><img src="../team/alexandre.png" class="circle responsive-img"><center>
-                    </div>
-                    <div class="col s3">
-                      <center><img src="../team/ludovic.jpg" class="circle responsive-img"><center>
-                      </div>
-                      <div class="col s3">
-                        <center><img src="../team/denis.png" class="circle responsive-img"><center>
-                        </div>
-                      </div>
-                      <center>Collaborateurs</center>
-                    </div>
-                  </div>
-                </div>
-                
-                <p>&nbsp;</p>
-                
-                <h3 class="center">Jeedom est membre :</h3>
-                <center><p class="light">De la Fédération Française de domotique, de la Z-Wave Alliance et de l'EnOcean Alliance.</p>
-                  <a target="_blank" href="https://www.smartbuildingsalliance.org"><img src="../img/sba.png" height="80" width=""></a>&nbsp;
-                  <a target="_blank" href="http://z-wavealliance.org/"><img src="../img/Z-Wave_Alliance_logo_RGB_large.png" height="80" width=""></a>&nbsp;
-                  <a target="_blank" href="https://www.enocean-alliance.org/"><img src="../img/enocean_alliance.png" height="80" width=""></a>
-                </center>
-              </div>
-            </div>
-            
-            <div id="cookieAcceptBar" class="cookieAcceptBar">
-              Nous utilisons des cookies pour vous garantir la meilleure expérience sur notre site web. Si vous continuez à utiliser ce site, nous supposerons que vous en êtes satisfait.<br> <button id="cookieAcceptBarConfirm" class="btn btn-success">Ok</button>
-            </div>
-            <div id="md_mention_legale" class="modal">
-              <div class="modal-content">
-                <h4>Mentions légales</h4>
-                <p>
-                  Le site <a href="https://www.jeedom.com" target="_blank">www.jeedom.com</a> est édité et exploité par la société JEEDOM SAS, société par Actions Simplifiée (SAS) au capital de 4.000 €, immatriculée au Registre du Commerce et des Sociétés de Lyon sous le n° 810505784 RCS LYON<br/>
-                  
-                  Siège social : 1691 Avenue de l'Hippodrome 69140 Rillieux La Pape - France<br/>
-                  N° de TVA intracommunautaire : FR31810505784<br/>
-                  <br/>
-                  REPRÉSENTANTS LÉGAUX:<br/>
-                  Président: ENOXA SAS<br/>
-                  <br/>
-                  CONTACT :<br/>
-                  Notre service clients est joignable par e-mail à l’adresse <a href="mailto:contact@jeedom.com">contact@jeedom.com</a><br/>
-                  <br/>
-                  HÉBERGEUR<br/>
-                  L’hébergement du site <a href="https://www.jeedom.com" target="_blank">www.jeedom.com</a> est assuré par :<br/>
-                  OVH<br/>
-                  <a href="http://www.ovh.com" target="_blank">http://www.ovh.com</a><br/>
-                  2 rue Kellermann – 59100 ROUBAIX – France<br/>
-                  <br/>
-                  Directeur de la publication et webmaster : Jeedom SAS</p>
-                </div>
-              </div>
-              
-              <br/> <br/><br/> <br/>
-              
-              <footer class="page-footer" style="background-color:#454449">
-                <div class="container">
-                  <div class="row">
-                    <div class="col l6 s12">
-                      <p class="grey-text text-lighten-5">
-                        Sources Jeedom : <a href="https://github.com/jeedom" target="_blank"><i class="fa fa-github"></i> Github</a><br/>
-                        © JEEDOM SAS. Tous droits réservés. Contact commercial : <a href="mailto:contact@jeedom.com">contact@jeedom.com</a>
-                      </p>
-                      <a class="waves-effect waves-light btn modal-trigger" style="background-color:#96c927" href="#md_mention_legale">Mentions légales</a>
-                    </div>
-                    <div class="col l3 s12 offset-l3">
-                      <h5 class="white-text">Social</h5>
-                      <ul>
-                        <li><a class="white-text" href="https://plus.google.com/communities/104294874486935347448"><i class="fa fa-google-plus"></i> Google+</a></li>
-                        <li><a class="white-text" href="https://www.facebook.com/pages/Jeedom/249936178537210"><i class="fa fa-facebook"></i> Facebook</a></li>
-                        <li><a class="white-text" href="https://twitter.com/Jeedom_domotic"><i class="fa fa-twitter"></i> Twitter</a></li>
-                        <li><a class="white-text" href="https://www.youtube.com/channel/UC5F6SKlzcjoNvHhBk0agKVw"><i class="fa fa-youtube"></i> Youtube</a></li>
-                        <li><a class="white-text" href="mailto:contact@jeedom.com"><i class="fa fa-envelope-o"></i> Mail</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </footer>
-              
-              <!--  Scripts-->
-              <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-              <script src="../js/materialize.js"></script>
-              <script src="../js/init.js"></script>
-              
-              <script type="text/javascript">
-              
-              $(document).ready(function(){
-                $('.modal-trigger').leanModal();
-                $('.slider').slider({indicators:false,interval : 2000});
-                
-                $('#bt_showCompatibility').on('click',function(){
-                  if($('#div_compatibility').is(':visible')){
-                    $('#div_compatibility').hide('blind')
-                  }else{
-                    $('#div_compatibility').show('blind')
-                  }
-                });
-                
-              });
-              </script>
-            </body>
-            </html>
-            
+ 	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+ 	<script type="text/javascript" src="https://doc.jeedom.com/js/init.js"></script>
+ 	<script type="text/javascript" src="https://doc.jeedom.com/js/materialize.min.js"></script>
+ </body>
+ </html>
