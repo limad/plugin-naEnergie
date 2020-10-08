@@ -15,9 +15,8 @@
 >*Liste non-exhaustive. Les changements mineurs et/ou corrections de bugs ne figurent pas forcément ici.*
 
 ### Version 09/10/2020
-!! Arrêt du support pour le plugin en Jeedom V3.
+!! Arrêt du support pour le plugin en Jeedom V3. Donc pour Jeedom V4:
 
-Donc pour Jeedom V4:
 * optimisations diverses (errors logs,...)
 * Mise à jour des commandes (Type Generic)
 * Compatibilité avec l'app mobile Jeedom
