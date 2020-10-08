@@ -3,7 +3,7 @@
 
 <img align="right" src="../images/naEnergie_icon.png" width="100">
 
-Netatmo-Energie - Plugin pour Jeedom (Intégration des thermostats et vannes NETATMO).
+## Netatmo-Energie - Plugin pour Jeedom (Intégration des thermostats et vannes NETATMO).
 
 ---
 
@@ -11,7 +11,7 @@ Netatmo-Energie - Plugin pour Jeedom (Intégration des thermostats et vannes NET
 * Topic dedié du plugin [netatmo-energie.](https://community.jeedom.com/t/re-plugin-tiers-netatmo-energie/38002/)
 * [Documentation](index.md).
 
-# Liste des évolutions majeures de la version courante :
+### Liste des évolutions majeures de la version courante :
 >*Liste non-exhaustive. Les changements mineurs et/ou correction de bugs ne figurent pas forcément ici.*
 
 ### Version 09/10/2020
