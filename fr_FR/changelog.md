@@ -20,8 +20,8 @@
 * optimisations diverses (errors logs,...)
 * Mise à jour des commandes (Type Generic)
 * Compatibilité avec l'app mobile Jeedom
-* Prise en charge des retours Webhook 
-*...
+* Prise en charge des retours Webhook
+* ...
 ### Version 1.0 27/04/2020
 * correction et amelioration mineurs des tuiles(dashboard, mobile)
   - signalement et affichage des alertes "error" sur la tuile.
