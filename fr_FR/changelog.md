@@ -8,9 +8,8 @@
 ---
 
 * Installation du plugin [naEnergie.](https://limad.github.io/plugin-naEnergie/fr_FR/#tocAnchor-1-3)
-* Topic dedié du plugin [netatmo-energie.](https://community.jeedom.com/t/re-plugin-tiers-netatmo-energie/38002/)
-* [Documentation du plugin.](https://community.jeedom.com/t/re-plugin-tiers-netatmo-energie/38002/)
-* [Documentation](https://limad.github.io/plugin-naEnergie/).
+* Topic dedié au plugin [netatmo-energie.](https://community.jeedom.com/t/re-plugin-tiers-netatmo-energie/38002/)
+* [Documentation du plugin.](https://community.jeedom.com/t/re-plugin-tiers-netatmo-energie/38002/).
 
 ### Liste des évolutions majeures de la version courante :
 >*Liste non-exhaustive. Les changements mineurs et/ou corrections de bugs ne figurent pas forcément ici.*
