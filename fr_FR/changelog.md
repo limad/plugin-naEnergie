@@ -1,8 +1,5 @@
 # Changelog
 ---
-title: Jeedom | Netatmo-Energie
-description: Intégration des thermostats et vannes NETATMO.
----
 
 <img align="right" src="../images/naEnergie_icon.png" width="100">
 
