@@ -6,7 +6,9 @@ description: Intégration des thermostats et vannes NETATMO.
 
 <img align="right" src="../images/naEnergie_icon.png" width="100">
 
-# Netatmo-Energie - Plugin pour Jeedom
+# Netatmo-Energie - Plugin pour Jeedom ( Intégration des thermostats et vannes NETATMO ).
+
+---
 
 * Installation du plugin [naEnergie.](https://limad.github.io/plugin-naEnergie/fr_FR/#tocAnchor-1-3)
 * Topic dedié du plugin [netatmo-energie.](https://community.jeedom.com/t/re-plugin-tiers-netatmo-energie/38002/)
