@@ -12,7 +12,7 @@
 * [Documentation](index.md).
 
 ### Liste des évolutions majeures de la version courante :
->*Liste non-exhaustive. Les changements mineurs et/ou correction de bugs ne figurent pas forcément ici.*
+>*Liste non-exhaustive. Les changements mineurs et/ou corrections de bugs ne figurent pas forcément ici.*
 
 ### Version 09/10/2020
 !! Arrêt du support pour le plugin en Jeedom V3
@@ -25,6 +25,6 @@ Donc pour Jeedom V4:
 ### Version 1.0 27/04/2020
 * correction et amelioration mineurs des tuiles(dashboard, mobile)
   - signalement et affichage des alertes "error" sur la tuile.
-### Version 0.8 25/03/2020
+### Version 25/03/2020
   * Installation de plugins
   * Mise à jour de plugins
