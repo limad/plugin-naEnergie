@@ -13,7 +13,12 @@
 
 ### Liste des évolutions majeures de la version courante :
 >*Liste non-exhaustive. Les changements mineurs et/ou corrections de bugs ne figurent pas forcément ici.*
-
+### Versio 01/12/2020
+* optimisations diverses (errors logs,...)
+* correction et amelioration des tuiles(dashboard, mobile)
+* Modification commande action "consigne" de type slider à type message avec endtime
+* Amelioration de la prise en charge de la commande "endtime" saisie en minutes/format date/timestamp
+  
 ### Version 09/10/2020
 !! Arrêt du support pour le plugin en Jeedom V3. Donc pour Jeedom V4:
 
@@ -22,6 +27,7 @@
 * Compatibilité avec l'app mobile Jeedom
 * Prise en charge des retours Webhook
 * ...
+
 ### Version 1.0 27/04/2020
 * correction et amelioration mineurs des tuiles(dashboard, mobile)
   - signalement et affichage des alertes "error" sur la tuile.
